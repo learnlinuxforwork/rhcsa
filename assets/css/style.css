@@ -172,12 +172,15 @@ li { margin-bottom: 5px; }
 }
 .brand__mark--logo { background: #000; border: 1px solid var(--border); padding: 4px; }
 .brand__mark--logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.brand__text { min-width: 0; }
+.brand__text { display: block; min-width: 0; }
 .brand__title {
-  font-size: 14.5px; font-weight: 700; color: var(--text);
+  display: block; font-size: 14.5px; font-weight: 700; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.brand__sub { font-size: 11px; color: var(--text-3); line-height: 1.2; }
+.brand__sub {
+  display: block; font-size: 11px; color: var(--text-3); line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 .header__spacer { flex: 1; }
 
