@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 9: LVM, NFS, and autofs — Free RHCSA Course</title>
+<meta name="description" content="Build logical volumes you can grow on demand, share a directory over the network, and mount it automatically only when it is needed.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">Free RHCSA Course</span>
+      <span class="brand__sub">Lab 9 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-09">&larr; Back to Week 9</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 9</div>
+    <h1>LVM, NFS, and autofs</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Build logical volumes you can grow on demand, share a directory over the network, and mount it automatically only when it is needed.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">4-5 hours</span>
+      <span class="chip">Week 8 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Week 8 complete</li><li>Free space or a third disk on servera</li><li>serverb reachable and able to run an NFS server</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. Build the LVM stack</h2><p>Physical volume, then volume group, then logical volume. Always in that order.</p><div class="cmd"><div class="cmd__t">Create physical volumes</div><pre>sudo parted -s $DISK mkpart primary 6GiB 8GiB
+sudo parted -s $DISK mkpart primary 8GiB 10GiB
+sudo partprobe $DISK
+sudo pvcreate ${DISK}5 ${DISK}6
+sudo pvs
+sudo pvdisplay ${DISK}5 | head</pre></div><div class="cmd"><div class="cmd__t">Create a volume group</div><pre>sudo vgcreate labvg ${DISK}5
+sudo vgs
+sudo vgdisplay labvg | head</pre></div><div class="cmd"><div class="cmd__t">Create logical volumes - by size and by extents</div><pre>sudo lvcreate -L 500M -n labdata labvg
+sudo lvcreate -l 50%FREE -n labarchive labvg
+sudo lvs
+lsblk</pre></div></div><div class="step"><h2>2. Format and mount a logical volume</h2><div class="cmd"><div class="cmd__t">Filesystem and persistent mount</div><pre>sudo mkfs.xfs /dev/labvg/labdata
+sudo mkdir -p /mnt/labdata
+LVUUID=$(sudo blkid -s UUID -o value /dev/labvg/labdata)
+echo "UUID=$LVUUID  /mnt/labdata  xfs  defaults  0 0" | sudo tee -a /etc/fstab
+sudo mount -a
+df -h /mnt/labdata</pre></div><div class="cmd"><div class="cmd__t">Put something in it so you can prove it survives</div><pre>echo 'written before the extend' | sudo tee /mnt/labdata/before.txt
+sudo cat /mnt/labdata/before.txt</pre></div></div><div class="step"><h2>3. Extend a volume group and a logical volume</h2><p>Growing storage online without losing data is a headline objective.</p><div class="cmd"><div class="cmd__t">Add capacity to the volume group</div><pre>sudo vgextend labvg ${DISK}6
+sudo vgs
+sudo pvs</pre></div><div class="cmd"><div class="cmd__t">Grow the logical volume and the filesystem together</div><pre>df -h /mnt/labdata
+sudo lvextend -L +800M -r /dev/labvg/labdata
+sudo lvs
+df -h /mnt/labdata
+sudo cat /mnt/labdata/before.txt</pre></div><div class="cmd"><div class="cmd__t">The two-step form, for when -r is not available</div><pre># sudo lvextend -L +200M /dev/labvg/labdata
+# XFS grows with:   sudo xfs_growfs /mnt/labdata
+# ext4 grows with:  sudo resize2fs /dev/labvg/labdata</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>The -r flag resizes the filesystem at the same time as the volume, which is why it is worth remembering. Note also that XFS can grow but cannot shrink - if a task asks you to shrink, the filesystem must be ext4.</p></div></div><div class="step"><h2>4. Remove volumes cleanly</h2><div class="cmd"><div class="cmd__t">Tear down in reverse order</div><pre>sudo lvremove -y labvg/labarchive
+sudo lvs
+# to remove the whole stack later:
+#   sudo umount /mnt/labdata
+#   sudo lvremove -y labvg/labdata
+#   sudo vgremove -y labvg
+#   sudo pvremove ${DISK}5 ${DISK}6</pre></div></div><div class="step"><h2>5. Export a directory over NFS</h2><p>Run this section on serverb.</p><div class="cmd"><div class="cmd__t">On serverb - install, export, and open the firewall</div><pre>sudo dnf install -y nfs-utils
+sudo mkdir -p /srv/nfsshare
+sudo chmod 777 /srv/nfsshare
+echo 'exported from serverb' | sudo tee /srv/nfsshare/hello.txt
+echo '/srv/nfsshare  *(rw,sync,no_root_squash)' | sudo tee /etc/exports
+sudo exportfs -rav
+sudo systemctl enable --now nfs-server
+sudo firewall-cmd --permanent --add-service=nfs
+sudo firewall-cmd --permanent --add-service=mountd
+sudo firewall-cmd --permanent --add-service=rpc-bind
+sudo firewall-cmd --reload</pre></div></div><div class="step"><h2>6. Mount the NFS share</h2><p>Back on servera.</p><div class="cmd"><div class="cmd__t">Discover and mount by hand</div><pre>sudo dnf install -y nfs-utils
+showmount -e serverb
+sudo mkdir -p /mnt/nfsshare
+sudo mount -t nfs serverb:/srv/nfsshare /mnt/nfsshare
+df -h | grep nfs
+cat /mnt/nfsshare/hello.txt</pre></div><div class="cmd"><div class="cmd__t">Make it persistent</div><pre>sudo umount /mnt/nfsshare
+echo 'serverb:/srv/nfsshare  /mnt/nfsshare  nfs  defaults,_netdev  0 0' | sudo tee -a /etc/fstab
+sudo mount -a
+df -h | grep nfs</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>_netdev tells systemd this mount needs the network up first. Without it, the boot can hang waiting for a share that is not reachable yet.</p></div></div><div class="step"><h2>7. autofs</h2><p>Mount on access, unmount when idle. Named explicitly in the objectives.</p><div class="cmd"><div class="cmd__t">Remove the static mount first</div><pre>sudo umount /mnt/nfsshare
+sudo sed -i '\|serverb:/srv/nfsshare|d' /etc/fstab
+grep nfs /etc/fstab || echo 'static NFS entry removed'</pre></div><div class="cmd"><div class="cmd__t">Configure the maps</div><pre>sudo dnf install -y autofs
+echo '/-  /etc/auto.direct' | sudo tee -a /etc/auto.master
+echo '/mnt/nfsshare  -rw,sync  serverb:/srv/nfsshare' | sudo tee /etc/auto.direct
+sudo systemctl enable --now autofs
+sudo systemctl restart autofs</pre></div><div class="cmd"><div class="cmd__t">Prove on-demand behaviour</div><pre>df -h | grep nfsshare || echo 'not mounted yet - correct'
+ls /mnt/nfsshare
+df -h | grep nfsshare
+# wait for the idle timeout, then it unmounts itself again</pre></div></div><div class="step"><h2>8. Diagnose a permission problem</h2><p>An explicit objective, and the diagnosis method matters more than the fix.</p><div class="cmd"><div class="cmd__t">Create the problem, then work it out</div><pre>sudo mkdir -p /srv/shared-data
+sudo chown root:root /srv/shared-data
+sudo chmod 700 /srv/shared-data
+sudo -u analyst1 ls /srv/shared-data   # fails
+ls -ld /srv/shared-data
+id analyst1</pre></div><div class="cmd"><div class="cmd__t">Fix it properly with a group, not with 777</div><pre>sudo chgrp engineering /srv/shared-data
+sudo chmod 2775 /srv/shared-data
+sudo -u analyst1 touch /srv/shared-data/works.txt
+ls -l /srv/shared-data</pre></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>sudo lvs &amp;&amp; sudo vgs &amp;&amp; sudo pvs</li><li>df -h /mnt/labdata   # should show the extended size</li><li>ls /mnt/nfsshare     # triggers the autofs mount</li><li>reboot, then confirm /mnt/labdata is mounted and 'ls /mnt/nfsshare' still works</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>sudo lvextend -L +5G /dev/labvg/labdata</pre></div>
+    <p><strong>What you'll see:</strong> The command fails with 'Insufficient free space' because the volume group has no room left.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>Add capacity first: create another PV, then 'sudo vgextend labvg &lt;new-pv&gt;', then retry the lvextend.</pre></div>
+    <p><strong>Why it matters:</strong> LVM is a stack, and you can only grow a layer if the one beneath it has room. When an lvextend fails, check 'vgs' before anything else - the answer is almost always there in the VFree column.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-08.html">&larr; Lab 8</a></span>
+    <span><a class="btn btn--primary" href="week-10.html">Lab 10 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>Free RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

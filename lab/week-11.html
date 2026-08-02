@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 11: Shell Scripting — Free RHCSA Course</title>
+<meta name="description" content="Write the small, practical scripts the exam asks for: conditionals, loops, arguments, and command substitution. Nothing exotic is tested.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">Free RHCSA Course</span>
+      <span class="brand__sub">Lab 11 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-11">&larr; Back to Week 11</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 11</div>
+    <h1>Shell Scripting</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Write the small, practical scripts the exam asks for: conditionals, loops, arguments, and command substitution. Nothing exotic is tested.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">3-4 hours</span>
+      <span class="chip">Weeks 1-10 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Weeks 1-10 complete</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. The skeleton</h2><p>Every script starts the same way.</p><div class="cmd"><div class="cmd__t">Create, make executable, run</div><pre>mkdir -p ~/bin &amp;&amp; cd ~/bin
+cat &gt; hello.sh &lt;&lt;'EOF'
+#!/bin/bash
+echo "Hello from $(hostname), running as $(whoami)"
+EOF
+chmod +x hello.sh
+./hello.sh</pre></div></div><div class="step"><h2>2. Conditionals</h2><p>if with test or [ ]. Know the file, string, and numeric operators.</p><div class="cmd"><div class="cmd__t">Branch on a condition</div><pre>cat &gt; check.sh &lt;&lt;'EOF'
+#!/bin/bash
+TARGET="/etc/passwd"
+
+if [ -f "$TARGET" ]; then
+    echo "$TARGET is a regular file"
+elif [ -d "$TARGET" ]; then
+    echo "$TARGET is a directory"
+else
+    echo "$TARGET does not exist"
+fi
+EOF
+chmod +x check.sh &amp;&amp; ./check.sh</pre></div><div class="cmd"><div class="cmd__t">The operators worth memorising</div><pre># Files:    -f (file)  -d (directory)  -e (exists)  -r -w -x (readable/writable/executable)
+# Strings:  = (equal)  != (not equal)  -z (empty)  -n (not empty)
+# Numbers:  -eq -ne -lt -le -gt -ge
+man test | head -40</pre></div><div class="cmd"><div class="cmd__t">Numeric and string comparison side by side</div><pre>cat &gt; compare.sh &lt;&lt;'EOF'
+#!/bin/bash
+COUNT=$(who | wc -l)
+
+if [ "$COUNT" -gt 1 ]; then
+    echo "$COUNT users are logged in"
+else
+    echo "Only one session"
+fi
+
+if [ "$(whoami)" = "root" ]; then
+    echo "Running as root"
+else
+    echo "Not root"
+fi
+EOF
+chmod +x compare.sh &amp;&amp; ./compare.sh</pre></div></div><div class="step"><h2>3. Loops</h2><p>for over a list, a glob, and command output; while for reading input.</p><div class="cmd"><div class="cmd__t">for, three ways</div><pre>cat &gt; loops.sh &lt;&lt;'EOF'
+#!/bin/bash
+
+for SERVICE in sshd chronyd firewalld; do
+    printf '%-12s %s\n' "$SERVICE" "$(systemctl is-active $SERVICE)"
+done
+
+for FILE in /etc/*.conf; do
+    echo "$(basename $FILE) has $(wc -l &lt; $FILE) lines"
+done
+
+for USERNAME in $(getent passwd | awk -F: '$3 &gt;= 1000 &amp;&amp; $3 &lt; 65534 {print $1}'); do
+    echo "Regular user: $USERNAME"
+done
+EOF
+chmod +x loops.sh &amp;&amp; ./loops.sh</pre></div><div class="cmd"><div class="cmd__t">while, reading a file line by line</div><pre>cat &gt; readfile.sh &lt;&lt;'EOF'
+#!/bin/bash
+while read -r LINE; do
+    case "$LINE" in
+        \#*|"") continue ;;
+    esac
+    echo "config line: $LINE"
+done &lt; /etc/chrony.conf
+EOF
+chmod +x readfile.sh &amp;&amp; ./readfile.sh | head</pre></div></div><div class="step"><h2>4. Script arguments</h2><p>Explicitly in the objectives. Handle them, and fail cleanly when they are missing.</p><div class="cmd"><div class="cmd__t">Positional parameters with validation</div><pre>cat &gt; args.sh &lt;&lt;'EOF'
+#!/bin/bash
+
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $(basename $0) &lt;name&gt; &lt;count&gt;" &gt;&amp;2
+    exit 1
+fi
+
+NAME="$1"
+COUNT="$2"
+
+echo "Script:    $0"
+echo "Arg count: $#"
+echo "All args:  $@"
+
+for i in $(seq 1 "$COUNT"); do
+    echo "$i. Hello, $NAME"
+done
+EOF
+chmod +x args.sh
+./args.sh
+./args.sh shea 3
+echo "exit status: $?"</pre></div></div><div class="step"><h2>5. Using command output</h2><p>Command substitution with $( ). Backticks work too but nest badly - use the modern form.</p><div class="cmd"><div class="cmd__t">Capture and act on output</div><pre>cat &gt; report.sh &lt;&lt;'EOF'
+#!/bin/bash
+
+HOST=$(hostname -s)
+WHEN=$(date '+%Y-%m-%d %H:%M')
+USED=$(df -h / | awk 'NR==2 {print $5}')
+LOAD=$(uptime | awk -F'load average:' '{print $2}')
+USERS=$(getent passwd | awk -F: '$3 &gt;= 1000 &amp;&amp; $3 &lt; 65534' | wc -l)
+
+echo "===== $HOST at $WHEN ====="
+echo "Root filesystem used: $USED"
+echo "Load average:        $LOAD"
+echo "Regular users:       $USERS"
+
+if [ "${USED%\%}" -gt 80 ]; then
+    echo "WARNING: root filesystem above 80 percent"
+    exit 2
+fi
+
+exit 0
+EOF
+chmod +x report.sh &amp;&amp; ./report.sh
+echo "exit status: $?"</pre></div></div><div class="step"><h2>6. Exit statuses</h2><p>Zero means success. Anything else means failure. Your scripts should follow that convention.</p><div class="cmd"><div class="cmd__t">Check and return meaningfully</div><pre>grep -q '^root:' /etc/passwd
+echo "grep found it, status: $?"
+grep -q '^nosuchuser:' /etc/passwd
+echo "grep did not find it, status: $?"
+
+systemctl is-active --quiet sshd &amp;&amp; echo 'sshd is up' || echo 'sshd is down'</pre></div></div><div class="step"><h2>7. Final objective sweep</h2><p>Before Week 12, go back to the source.</p><div class="cmd"><div class="cmd__t">Re-read the official list and be honest</div><pre># Open the EX200 objectives and read every bullet.
+# For each one, ask: could I do this right now, on a fresh machine, with no notes?
+# Write down every 'no' or 'probably'. That list drives Week 12.</pre></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>cd ~/bin &amp;&amp; for s in *.sh; do bash -n "$s" &amp;&amp; echo "$s: syntax ok"; done</li><li>./args.sh shea 2</li><li>./report.sh; echo "exit: $?"</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>sed -i 's/if \[ "$#" -lt 2 \]; then/if [ $# -lt 2 ] then/' ~/bin/args.sh</pre></div>
+    <p><strong>What you'll see:</strong> The script fails with a syntax error near an unexpected token.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>Restore the missing semicolon before then: 'if [ $# -lt 2 ]; then'. Check with: bash -n ~/bin/args.sh</pre></div>
+    <p><strong>Why it matters:</strong> 'bash -n script.sh' parses without executing and is the fastest way to find a syntax error. Also note the quoting: "$#" and "$1" in quotes protects you from empty or space-containing values - a habit worth having before the exam.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-10.html">&larr; Lab 10</a></span>
+    <span><a class="btn btn--primary" href="week-12.html">Lab 12 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>Free RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

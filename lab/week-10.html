@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 10: SELinux, SSH Keys, and Default Permissions — Free RHCSA Course</title>
+<meta name="description" content="Work with SELinux rather than around it, set up key-based authentication, and control default permissions. This domain fails more candidates than any other.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">Free RHCSA Course</span>
+      <span class="brand__sub">Lab 10 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-10">&larr; Back to Week 10</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 10</div>
+    <h1>SELinux, SSH Keys, and Default Permissions</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Work with SELinux rather than around it, set up key-based authentication, and control default permissions. This domain fails more candidates than any other.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">4-5 hours</span>
+      <span class="chip">Week 9 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Week 9 complete</li><li>Both machines reachable</li><li>A snapshot before you start</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. Modes</h2><p>Enforcing blocks and logs. Permissive only logs. Disabled does neither - and is never the right answer on the exam.</p><div class="cmd"><div class="cmd__t">Check and switch at runtime</div><pre>getenforce
+sestatus
+sudo setenforce 0
+getenforce
+sudo setenforce 1
+getenforce</pre></div><div class="cmd"><div class="cmd__t">Make the mode persistent</div><pre>sudo cat /etc/selinux/config | grep -v '^#'
+sudo sed -i 's/^SELINUX=.*/SELINUX=enforcing/' /etc/selinux/config
+grep '^SELINUX=' /etc/selinux/config</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>setenforce changes the current mode only. The file is what applies at boot. A task that says 'SELinux must be enforcing' means both.</p></div></div><div class="step"><h2>2. Read contexts</h2><p>Every file and process carries a context. The fourth field - the type - is what usually matters.</p><div class="cmd"><div class="cmd__t">Files, processes, ports, and users</div><pre>ls -Z /var/www/html 2&gt;/dev/null || sudo mkdir -p /var/www/html &amp;&amp; ls -Zd /var/www/html
+ps -eZ | grep sshd | head -3
+id -Z
+sudo semanage port -l | grep -w http_port_t</pre></div></div><div class="step"><h2>3. Fix a context the right way</h2><p>This is the classic exam scenario: content served from a non-default location.</p><div class="cmd"><div class="cmd__t">Set up a web server with content in the wrong place</div><pre>sudo dnf install -y httpd
+sudo systemctl enable --now httpd
+sudo firewall-cmd --permanent --add-service=http &amp;&amp; sudo firewall-cmd --reload
+sudo mkdir -p /srv/mysite
+echo '&lt;h1&gt;Lab site&lt;/h1&gt;' | sudo tee /srv/mysite/index.html
+ls -Zd /srv/mysite</pre></div><div class="cmd"><div class="cmd__t">Point httpd at it and watch it fail</div><pre>sudo sed -i 's|^DocumentRoot .*|DocumentRoot "/srv/mysite"|' /etc/httpd/conf/httpd.conf
+sudo systemctl restart httpd
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost/
+sudo journalctl -t setroubleshoot --no-pager | tail -5
+sudo ausearch -m AVC -ts recent 2&gt;/dev/null | tail -20</pre></div><div class="cmd"><div class="cmd__t">Fix it permanently with semanage plus restorecon</div><pre>sudo dnf install -y policycoreutils-python-utils
+sudo semanage fcontext -a -t httpd_sys_content_t '/srv/mysite(/.*)?'
+sudo restorecon -Rv /srv/mysite
+ls -Zd /srv/mysite
+ls -Z /srv/mysite
+curl -s http://localhost/</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>chcon would also have worked right now - and would be wiped by the next relabel. semanage fcontext writes the rule into policy; restorecon applies it. That pairing is the correct, persistent answer.</p></div></div><div class="step"><h2>4. Port labels</h2><p>Running a service on a non-standard port needs the port labelled, or SELinux blocks the bind.</p><div class="cmd"><div class="cmd__t">Move httpd to port 8888</div><pre>sudo sed -i 's/^Listen 80$/Listen 8888/' /etc/httpd/conf/httpd.conf
+sudo systemctl restart httpd   # this fails
+sudo systemctl status httpd --no-pager | tail -5</pre></div><div class="cmd"><div class="cmd__t">Label the port, then it starts</div><pre>sudo semanage port -a -t http_port_t -p tcp 8888
+sudo semanage port -l | grep -w http_port_t
+sudo systemctl restart httpd
+sudo firewall-cmd --permanent --add-port=8888/tcp &amp;&amp; sudo firewall-cmd --reload
+curl -s http://localhost:8888/</pre></div></div><div class="step"><h2>5. Booleans</h2><p>Booleans switch predefined policy behaviour on and off. -P makes the change survive a reboot.</p><div class="cmd"><div class="cmd__t">Find and set one</div><pre>getsebool -a | head
+getsebool -a | grep httpd | head -10
+getsebool httpd_enable_homedirs
+sudo setsebool -P httpd_enable_homedirs on
+getsebool httpd_enable_homedirs</pre></div><div class="cmd"><div class="cmd__t">See what a boolean actually does</div><pre>sudo semanage boolean -l | grep httpd_enable_homedirs</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>Without -P the change is lost at reboot. Given the persistence rule, a boolean set without -P scores nothing.</p></div></div><div class="step"><h2>6. Read a denial</h2><p>Being able to interpret the log is the skill; the fix follows from it.</p><div class="cmd"><div class="cmd__t">Find and translate</div><pre>sudo ausearch -m AVC -ts today 2&gt;/dev/null | tail -20
+sudo journalctl -t setroubleshoot --no-pager | tail
+# sealert gives a plain-English explanation when setroubleshoot is installed:
+sudo dnf install -y setroubleshoot-server 2&gt;/dev/null
+sudo sealert -a /var/log/audit/audit.log 2&gt;/dev/null | head -30</pre></div></div><div class="step"><h2>7. Key-based SSH authentication</h2><div class="cmd"><div class="cmd__t">Generate a key and install it</div><pre>ssh-keygen -t ed25519 -C 'shea@servera' -f ~/.ssh/id_ed25519 -N ''
+ls -l ~/.ssh/
+ssh-copy-id shea@serverb
+ssh shea@serverb 'echo key auth works; hostname'</pre></div><div class="cmd"><div class="cmd__t">Confirm the permissions SSH insists on</div><pre>ssh shea@serverb 'ls -ld ~/.ssh; ls -l ~/.ssh/authorized_keys'
+# ~/.ssh must be 700 and authorized_keys 600, or sshd ignores them</pre></div><div class="cmd"><div class="cmd__t">Optionally disable password authentication</div><pre>ssh shea@serverb "sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config &amp;&amp; sudo systemctl restart sshd"</pre></div></div><div class="step"><h2>8. Default permissions with umask</h2><div class="cmd"><div class="cmd__t">See the effect</div><pre>umask
+touch ~/umask-default.txt
+mkdir ~/umask-default-dir
+ls -l ~/umask-default.txt
+ls -ld ~/umask-default-dir</pre></div><div class="cmd"><div class="cmd__t">Change it for this shell, then persistently</div><pre>umask 0077
+touch ~/umask-private.txt
+ls -l ~/umask-private.txt
+echo 'umask 0077' &gt;&gt; ~/.bashrc</pre></div><div class="cmd"><div class="cmd__t">System-wide default</div><pre>grep -rn umask /etc/profile /etc/bashrc | head</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>umask subtracts from 666 for files and 777 for directories. 0077 gives 600 files and 700 directories - private to the owner.</p></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>getenforce   # must say Enforcing</li><li>grep '^SELINUX=' /etc/selinux/config</li><li>ls -Zd /srv/mysite | grep httpd_sys_content_t</li><li>sudo semanage port -l | grep -w http_port_t | grep 8888</li><li>getsebool httpd_enable_homedirs</li><li>reboot, then re-run all of the above</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>sudo chcon -t user_home_t /srv/mysite/index.html &amp;&amp; sudo restorecon -Rv /srv/mysite</pre></div>
+    <p><strong>What you'll see:</strong> You set a context with chcon, then restorecon immediately reverted it - because policy disagreed with you.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>That IS the correct behaviour. Use: sudo semanage fcontext -a -t httpd_sys_content_t '/srv/mysite(/.*)?' &amp;&amp; sudo restorecon -Rv /srv/mysite</pre></div>
+    <p><strong>Why it matters:</strong> chcon is a temporary label; semanage fcontext is a policy rule. If a fix disappears after a relabel or reboot, you used chcon where you needed semanage. Never solve an SELinux problem by setting permissive - the exam grades the security domain, and permissive fails it.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-09.html">&larr; Lab 9</a></span>
+    <span><a class="btn btn--primary" href="week-11.html">Lab 11 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>Free RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

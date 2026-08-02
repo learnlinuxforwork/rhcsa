@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 6: Logs, Journals, and Time — Free RHCSA Course</title>
+<meta name="description" content="Find out what a system has been doing, make that record survive a reboot, and keep the clock correct.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">Free RHCSA Course</span>
+      <span class="brand__sub">Lab 6 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-06">&larr; Back to Week 6</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 6</div>
+    <h1>Logs, Journals, and Time</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Find out what a system has been doing, make that record survive a reboot, and keep the clock correct.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">2-3 hours</span>
+      <span class="chip">Week 5 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Week 5 complete</li><li>Both machines reachable</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. Read the journal</h2><p>journalctl is the primary tool. Learn the filters rather than scrolling.</p><div class="cmd"><div class="cmd__t">Filter by unit, priority, and time</div><pre>sudo journalctl -u sshd --no-pager | tail -20
+sudo journalctl -p err --no-pager | tail -20
+sudo journalctl --since '1 hour ago' --no-pager | tail
+sudo journalctl --since '2026-08-01 09:00' --until '2026-08-01 17:00' --no-pager | tail</pre></div><div class="cmd"><div class="cmd__t">Follow live, and look at a specific boot</div><pre>sudo journalctl -f    # Ctrl-C to stop
+sudo journalctl --list-boots
+sudo journalctl -b -1 --no-pager | head</pre></div><div class="cmd"><div class="cmd__t">Kernel messages and a specific executable</div><pre>sudo journalctl -k --no-pager | tail
+sudo journalctl /usr/sbin/sshd --no-pager | tail -5</pre></div></div><div class="step"><h2>2. Make the journal persistent</h2><p>By default the journal may live only in memory and vanish at reboot. Preserving it is an explicit objective.</p><div class="cmd"><div class="cmd__t">Create the directory and configure it</div><pre>sudo mkdir -p /var/log/journal
+sudo systemd-tmpfiles --create --prefix /var/log/journal
+sudo sed -i 's/^#\?Storage=.*/Storage=persistent/' /etc/systemd/journald.conf
+grep -i storage /etc/systemd/journald.conf</pre></div><div class="cmd"><div class="cmd__t">Restart and confirm</div><pre>sudo systemctl restart systemd-journald
+sudo journalctl --list-boots
+ls -ld /var/log/journal/*</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>After a reboot, 'journalctl --list-boots' should show more than one entry. If it only ever shows the current boot, persistence is not working.</p></div></div><div class="step"><h2>3. Traditional log files</h2><p>rsyslog still writes plain text files that some tasks reference by name.</p><div class="cmd"><div class="cmd__t">What is there</div><pre>sudo ls -l /var/log/
+sudo tail -20 /var/log/messages
+sudo tail -20 /var/log/secure
+sudo grep -i 'authentication failure' /var/log/secure | tail</pre></div><div class="cmd"><div class="cmd__t">Generate an entry and find it in both places</div><pre>logger -p user.notice 'RHCSA lab test message from shea'
+sudo grep 'RHCSA lab test' /var/log/messages
+sudo journalctl --no-pager | grep 'RHCSA lab test'</pre></div></div><div class="step"><h2>4. Time services</h2><p>chrony is the client. Configure it, then prove synchronisation.</p><div class="cmd"><div class="cmd__t">Install, enable, and inspect</div><pre>sudo dnf install -y chrony
+sudo systemctl enable --now chronyd
+chronyc sources -v
+chronyc tracking</pre></div><div class="cmd"><div class="cmd__t">Point at a specific server</div><pre>sudo cp /etc/chrony.conf /root/chrony.conf.backup
+sudo sed -i '/^pool /d' /etc/chrony.conf
+echo 'server time.cloudflare.com iburst' | sudo tee -a /etc/chrony.conf
+sudo systemctl restart chronyd
+sleep 5
+chronyc sources</pre></div><div class="cmd"><div class="cmd__t">Timezone and clocks</div><pre>timedatectl
+timedatectl list-timezones | grep -i new_york
+sudo timedatectl set-timezone America/New_York
+sudo timedatectl set-ntp true
+timedatectl</pre></div></div><div class="step"><h2>5. Secure file transfer</h2><p>Named in the objectives, and you will use it constantly anyway.</p><div class="cmd"><div class="cmd__t">Three ways to move a file to the second machine</div><pre>echo 'transfer test' &gt; ~/transfer.txt
+scp ~/transfer.txt shea@serverb:~/
+rsync -av ~/lab01/ shea@serverb:~/lab01-copy/
+sftp shea@serverb &lt;&lt;'EOF'
+put ~/transfer.txt remote-via-sftp.txt
+ls
+bye
+EOF</pre></div><div class="cmd"><div class="cmd__t">Confirm from the far end</div><pre>ssh shea@serverb 'ls -l ~/transfer.txt ~/remote-via-sftp.txt; ls ~/lab01-copy | head'</pre></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>sudo journalctl --list-boots      # more than one line after a reboot</li><li>ls -d /var/log/journal/*</li><li>chronyc tracking | head -3</li><li>timedatectl | grep -E 'Time zone|synchronized'</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>sudo sed -i 's/^Storage=persistent/Storage=volatile/' /etc/systemd/journald.conf &amp;&amp; sudo systemctl restart systemd-journald &amp;&amp; sudo reboot</pre></div>
+    <p><strong>What you'll see:</strong> After the reboot, 'journalctl --list-boots' shows only the current boot. Yesterday's evidence is gone.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>sudo sed -i 's/^Storage=volatile/Storage=persistent/' /etc/systemd/journald.conf &amp;&amp; sudo systemctl restart systemd-journald</pre></div>
+    <p><strong>Why it matters:</strong> 'Preserve system journals' is a real objective, and volatile storage silently discards everything at shutdown. The verification is always the same: reboot, then list boots.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-05.html">&larr; Lab 5</a></span>
+    <span><a class="btn btn--primary" href="week-07.html">Lab 7 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>Free RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

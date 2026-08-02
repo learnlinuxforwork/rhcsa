@@ -1,0 +1,1800 @@
+{
+  "meta": {
+    "title": "Free RHCSA Course",
+    "subtitle": "Zero to Red Hat Certified System Administrator (EX200)",
+    "tagline": "A 12-week, week-by-week course with a full lab guide behind every week. Free forever.",
+    "exam": "EX200 · Red Hat Enterprise Linux 10",
+    "edition": "August 2026",
+    "preparedFor": "Normal Broke People",
+    "site": "https://rhcsa.learnlinuxforwork.com",
+    "org": "Shea's Tech",
+    "author": "Shea",
+    "links": {
+      "linuxTraining": "https://www.learnlinuxforwork.com",
+      "docLinux": "https://learnlinuxforwork.com/doc-linux",
+      "linuxcert": "https://linuxcert.guru/",
+      "kubecraft": "https://www.skool.com/linux/classroom",
+      "repo": "https://github.com/learnlinuxforwork/rhcsa"
+    }
+  },
+  "hero": {
+    "stats": [
+      {
+        "value": "12",
+        "label": "weeks"
+      },
+      {
+        "value": "12",
+        "label": "lab guides"
+      },
+      {
+        "value": "10",
+        "label": "exam domains"
+      },
+      {
+        "value": "$0",
+        "label": "to start"
+      }
+    ]
+  },
+  "overview": {
+    "id": "how-it-works",
+    "num": "01",
+    "eyebrow": "01 · Overview",
+    "title": "How This Course Works",
+    "subtitle": "Twelve weeks from first shell prompt to a passing score",
+    "body": [
+      "The RHCSA is not a multiple-choice exam. You are given a live Red Hat Enterprise Linux system, a list of tasks, and a few hours. Nothing is graded on how you did it — only on whether the machine ends up in the required state, and whether it stays that way after a reboot. That single fact should shape everything about how you study.",
+      "So this course is built around doing, not reading. Every week has a focus, a short list of tasks, and a <strong>full lab guide</strong> with the actual commands, the verification step, and a break/fix drill that forces you to recover from something you broke on purpose. If you finish a week without having typed anything, you haven't finished the week.",
+      "The current exam is <strong>EX200 on Red Hat Enterprise Linux 10</strong>. That matters — RHEL 10 added Flatpak package management to the objectives, and some older topics have moved on. Everything here targets the RHEL 10 objective list."
+    ],
+    "rhythm": [
+      {
+        "pct": "70%",
+        "text": "hands-on labs on a machine you can break and rebuild"
+      },
+      {
+        "pct": "20%",
+        "text": "reading the man pages and system docs — the only reference you get in the exam"
+      },
+      {
+        "pct": "10%",
+        "text": "review — write down every command that didn't work the first time"
+      }
+    ],
+    "pacing": {
+      "headers": [
+        "Track",
+        "Duration",
+        "Hrs/wk",
+        "How it runs"
+      ],
+      "rows": [
+        [
+          "Standard",
+          "12 weeks",
+          "8–10",
+          "One week per module. Realistic for a working adult starting near zero."
+        ],
+        [
+          "Intensive",
+          "6 weeks",
+          "16–20",
+          "Two modules per calendar week. Best if you have prior Linux exposure or are job-searching full time."
+        ],
+        [
+          "Extended",
+          "18 weeks",
+          "5–6",
+          "Stretch each module by half. Better than quitting because the pace was unrealistic."
+        ]
+      ]
+    },
+    "note": {
+      "kind": "warn",
+      "title": "The rule that fails more candidates than any other",
+      "text": "<strong>Configurations must persist after reboot without intervention.</strong> That is written into the objectives. A mount that works until you reboot is worth zero. A service that runs but isn't enabled is worth zero. Build the habit now: after every single lab in this course, run <code>reboot</code> and confirm your work survived. If you only take one thing from this page, take that."
+    }
+  },
+  "exam": {
+    "id": "the-exam",
+    "num": "02",
+    "eyebrow": "02 · The exam",
+    "title": "What the RHCSA Actually Is",
+    "subtitle": "Format, conditions, and what the graders care about",
+    "body": [
+      "Knowing the shape of the exam changes how you practise. This is a performance-based, hands-on exam — you sit at a real RHEL 10 system and complete real administration tasks. There are no questions to answer and no partial credit for knowing the theory."
+    ],
+    "facts": [
+      {
+        "k": "Exam code",
+        "v": "EX200"
+      },
+      {
+        "k": "Based on",
+        "v": "Red Hat Enterprise Linux 10"
+      },
+      {
+        "k": "Format",
+        "v": "Performance-based — real tasks on a live system"
+      },
+      {
+        "k": "Internet access",
+        "v": "None during the exam"
+      },
+      {
+        "k": "Notes or books",
+        "v": "Not permitted, in any form"
+      },
+      {
+        "k": "Documentation",
+        "v": "The docs that ship with the product are available — man pages, info, /usr/share/doc"
+      },
+      {
+        "k": "Persistence",
+        "v": "Every configuration must survive a reboot with no intervention"
+      },
+      {
+        "k": "Leads to",
+        "v": "Prerequisite for RHCE (Enterprise Linux and Ansible tracks)"
+      }
+    ],
+    "implications": {
+      "title": "What that means for how you study",
+      "bullets": [
+        "<strong>Learn the man pages, not the tutorials.</strong> They are the only reference you get. Practise finding things with <code>man -k</code>, <code>man 5 fstab</code>, and <code>/usr/share/doc</code> until it is second nature.",
+        "<strong>Speed matters, but correctness matters more.</strong> A half-finished task scores nothing. Finish and verify each task before moving to the next.",
+        "<strong>Reboot constantly while practising.</strong> Make it a reflex, not a checklist item.",
+        "<strong>Never memorise a GUI path.</strong> Everything in this course is done at the command line, because that is what is reliably available.",
+        "<strong>There is no partial credit for approach.</strong> If <code>vim</code> and a text editor both get the file right, both are correct. Use whatever you are fastest with."
+      ]
+    },
+    "note": {
+      "kind": "info",
+      "title": "Read the objectives yourself — from the source",
+      "text": "Red Hat publishes the full EX200 objective list, and it is the only authoritative statement of what is testable. Everything in this course maps to it. Bookmark it and re-read it in Week 11: <a href=\"https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam\" target=\"_blank\" rel=\"noopener\">redhat.com — EX200 exam objectives</a>."
+    }
+  },
+  "homelab": {
+    "id": "home-lab",
+    "num": "03",
+    "eyebrow": "03 · Home lab",
+    "title": "Build Your Home Lab",
+    "subtitle": "Two virtual machines, a free hypervisor, and a Red Hat developer account — that's the whole setup",
+    "body": [
+      "You need at least two RHEL 10 systems you are willing to destroy: one to work on, one to practise remote access, file transfer, and NFS against. Virtual machines are ideal — they snapshot, they roll back, and breaking one costs you nothing.",
+      "A laptop you already own plus a free hypervisor and a free Red Hat developer account is the entire minimum investment. Everything below assumes that setup."
+    ],
+    "startHere": {
+      "kind": "success",
+      "title": "Start here — the three-step path",
+      "steps": [
+        "Create a free Red Hat account and activate the <strong>Developer Subscription for Individuals</strong>. It covers up to <strong>16 systems</strong> at no cost.",
+        "Install <strong>RHEL 10</strong> on real hardware, or two VMs on whatever machine you already own. Rocky Linux 10 is the free rebuild if you would rather not register.",
+        "Snapshot both machines. Then break them on purpose, every single week, and put them back."
+      ]
+    },
+    "budgetNote": {
+      "kind": "warn",
+      "title": "Don't overbuy",
+      "text": "Two virtual machines on a laptop you already own costs nothing and is enough for the entire exam. Buy hardware only if your current machine can't spare 8 GB of RAM. There is no lab in this course that needs a server, a rack, or a homelab YouTube shopping list."
+    },
+    "groups": [
+      {
+        "step": "Step 1",
+        "title": "Pick a hypervisor and size the VMs",
+        "intro": "Everything in this course runs on two virtual machines. Any of these will do it — pick the one that matches your hardware and stop researching. Oracle VirtualBox is the default recommendation because it is free, cross-platform, and has snapshots that are one click away.",
+        "columns": [
+          "Hypervisor",
+          "Why you'd pick it",
+          "Cost"
+        ],
+        "items": [
+          {
+            "name": "Oracle VirtualBox",
+            "sub": "virtualbox.org",
+            "url": "https://www.virtualbox.org/",
+            "desc": "<strong>The default choice for this course.</strong> Free, open source, and runs on Linux, macOS (Intel), and other desktops. Snapshots are immediate and easy to roll back, which matters enormously here — you will break these machines every week. Use the built-in <em>Host-only Adapter</em> for the private lab network.",
+            "meta": "Free"
+          },
+          {
+            "name": "VMware Workstation Pro",
+            "sub": "Broadcom — support.broadcom.com",
+            "url": "https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion",
+            "desc": "Now free for personal use under Broadcom. Noticeably faster disk and network performance than VirtualBox on most hardware, and its snapshot tree is better if you like branching. Fusion is the equivalent on Mac. Use a <em>Host-only</em> or <em>Custom (VMnet)</em> network for the lab segment.",
+            "meta": "Free for personal use"
+          },
+          {
+            "name": "KVM / virt-manager",
+            "sub": "libvirt on a Linux host",
+            "url": "https://virt-manager.org/",
+            "desc": "If your daily driver is already Linux, this is the fastest and lightest option — it is the same virtualisation stack RHEL itself uses, so what you learn transfers. Install with <code>dnf install -y virt-manager libvirt qemu-kvm</code> and use the default NAT network plus an isolated network for the lab.",
+            "meta": "Free"
+          },
+          {
+            "name": "Proxmox VE",
+            "sub": "proxmox.com",
+            "url": "https://www.proxmox.com/en/",
+            "desc": "Only worth it if you have a spare machine to dedicate. Runs on bare metal, managed from a browser, and lets you leave the lab running permanently without tying up your laptop. Overkill for RHCSA alone, but it pays off if you continue toward RHCE or the DevOps roadmap.",
+            "meta": "Free"
+          },
+          {
+            "name": "UTM",
+            "sub": "mac.getutm.app",
+            "url": "https://mac.getutm.app/",
+            "desc": "The practical option on an Apple Silicon Mac, where VirtualBox does not run. It emulates or virtualises aarch64 guests — RHEL 10 ships an aarch64 ISO, so this works. Slower than x86 on x86, but perfectly usable for everything in this course.",
+            "meta": "Free"
+          },
+          {
+            "name": "Hands-on labs in the browser",
+            "url": "https://www.learnlinuxforwork.com",
+            "desc": "No hypervisor, no download, no spare RAM. Guided hands-on Linux labs that run in a browser tab — useful when you are away from your own machines, or if your laptop simply cannot host VMs. Pair it with <a href=\"https://www.redhat.com/en/interactive-labs\" target=\"_blank\" rel=\"noopener\">Red Hat's free interactive labs</a>.",
+            "meta": "Free / hosted",
+            "sub": "learnlinuxforwork.com"
+          }
+        ],
+        "after": {
+          "title": "Recommended VM configuration",
+          "bullets": [
+            "<strong>Host operating system:</strong> any of these hypervisors run on <a href=\"https://ubuntu.com/\" target=\"_blank\" rel=\"noopener\">Ubuntu</a>, Fedora, RHEL, Rocky, or another Linux desktop. <strong>Ubuntu is the easiest host to get running</strong> on a used laptop or a home server — install it, add VirtualBox or VMware Workstation, and build your RHEL and Rocky guests on top. The host distro has no bearing on the exam; only the guests matter.",
+            "<strong>servera (primary):</strong> 2 vCPU, 4 GB RAM, 20 GB system disk, <strong>plus a second empty 10 GB disk</strong>. That spare disk is what you partition in Week 8 and turn into LVM in Week 9 — add it at build time and forget about it.",
+            "<strong>serverb (secondary):</strong> 1 vCPU, 2 GB RAM, 20 GB disk. It only ever acts as an SSH target, a file-transfer destination, and an NFS server.",
+            "<strong>Networking:</strong> give both machines two adapters — one NAT adapter so they can reach the internet for package installs, and one <em>host-only / internal</em> adapter on a private subnet so they can reach each other at fixed addresses. Week 7 configures static addressing on that second adapter.",
+            "<strong>Firmware:</strong> enable EFI if your hypervisor offers it. RHEL 10 installs happily either way, but EFI matches what you are most likely to meet in the real world.",
+            "<strong>Install type:</strong> choose <em>Server</em> or <em>Minimal Install</em>, never Workstation. You want to live at a text console, because that is where the exam happens.",
+            "<strong>Snapshots:</strong> take one named <code>clean</code> the moment each install finishes, and another named <code>networked</code> once Week 7 is done. Roll back to <code>clean</code> before every mock exam.",
+            "<strong>Host requirements:</strong> 8 GB of RAM on the host is enough to run both machines at once. With 16 GB you will not notice them at all."
+          ]
+        }
+      },
+      {
+        "step": "Step 2",
+        "title": "Get the operating system",
+        "intro": "RHEL and Rocky are what you practise the exam on — same commands, same behaviour. Ubuntu has a different job here: it makes a fine <strong>host</strong> for the laptop or server that runs your virtual machines.",
+        "columns": [
+          "Operating system",
+          "What it is and when to use it",
+          "Cost"
+        ],
+        "items": [
+          {
+            "name": "Red Hat Enterprise Linux 10",
+            "sub": "Developer Edition — developers.redhat.com",
+            "url": "https://developers.redhat.com/products/rhel/download",
+            "desc": "The real exam platform. The <strong>Developer Subscription for Individuals</strong> is free and covers up to <strong>16 physical or virtual systems</strong>. Create an account, activate the subscription, download the boot or DVD ISO. This is the one to use. <a href=\"https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux\" target=\"_blank\" rel=\"noopener\">Read the FAQ</a> for the terms.",
+            "meta": "Free · 16 systems"
+          },
+          {
+            "name": "Rocky Linux 10",
+            "sub": "rockylinux.org",
+            "url": "https://rockylinux.org/",
+            "desc": "A community rebuild of RHEL 10 — same commands, same behaviour, no account required. Use it for extra practice nodes, or if you want to start tonight without registering anything. One caveat: subscription-manager and Red Hat CDN tasks only exist on real RHEL.",
+            "meta": "Free · unlimited"
+          },
+          {
+            "name": "Ubuntu",
+            "url": "https://ubuntu.com/",
+            "desc": "Ubuntu is not RHEL-compatible, so do not use it as your <em>exam practice</em> guest — the package manager, SELinux behaviour, and defaults all differ. But it is an excellent <strong>host</strong> operating system: install Ubuntu on the laptop or server, run VirtualBox, VMware Workstation, or KVM on top of it, and boot your RHEL and Rocky guests inside. It is also the distro you are most likely to meet at work, so a third VM running it is time well spent.",
+            "meta": "Free · host or guest",
+            "sub": "Canonical — ubuntu.com"
+          }
+        ],
+        "after": {
+          "title": "Getting it installed",
+          "bullets": [
+            "Download the ISO from <a href=\"https://developers.redhat.com/products/rhel/download\" target=\"_blank\" rel=\"noopener\">developers.redhat.com</a> (RHEL) or <a href=\"https://rockylinux.org/\" target=\"_blank\" rel=\"noopener\">rockylinux.org</a> (Rocky).",
+            "Write it to a USB stick with <code>dd</code> or balenaEtcher if you are installing to bare metal.",
+            "Choose <strong>Server</strong> or <strong>Minimal Install</strong> at the package-selection screen — not Workstation. You want to live at a text console, because that is where the exam happens.",
+            "Give each VM 2 CPUs, 2–4 GB RAM, and a 20 GB disk, plus <strong>a second empty 10 GB disk</strong>. You will need that spare disk from Week 8 onward for partitioning and LVM. Add it now and forget about it.",
+            "Take a snapshot the moment the install finishes and you have logged in once. Name it <code>clean</code>. You will roll back to it more often than you expect."
+          ]
+        }
+      },
+      {
+        "step": "Step 3",
+        "title": "Set up the two-machine topology",
+        "intro": "A handful of objectives — SSH, key-based authentication, secure file transfer, NFS, autofs — need a second system. Build both now so you are never blocked mid-lab.",
+        "columns": [
+          "Machine",
+          "Role",
+          "Suggested name"
+        ],
+        "items": [
+          {
+            "name": "Primary",
+            "url": "",
+            "desc": "Where you do almost everything. Partitioning, LVM, SELinux, services, users, scripting. This is the one you break.",
+            "meta": "servera"
+          },
+          {
+            "name": "Secondary",
+            "url": "",
+            "desc": "The remote end. SSH target, scp/rsync destination, NFS server for the storage weeks. Lighter — 1 CPU and 1 GB RAM is fine.",
+            "meta": "serverb"
+          }
+        ],
+        "after": {
+          "title": "Wire them together once, at the start",
+          "bullets": [
+            "Put both VMs on the same host-only or internal network so they can reach each other by IP.",
+            "Add both to <code>/etc/hosts</code> on each machine so <code>ssh serverb</code> works without DNS. You will configure real name resolution in Week 7.",
+            "Confirm you can <code>ssh</code> both directions before Week 1 ends. Nearly every later lab assumes it.",
+            "Snapshot both again once networking works. Name it <code>networked</code>."
+          ]
+        }
+      },
+      {
+        "step": "Step 4",
+        "title": "Build the local lab with one script",
+        "intro": "Two ready-to-run scripts live in the <code>scripts/</code> folder of the course repo. Both create the same two machines — <code>servera</code> and <code>serverb</code> — with the spare 10&nbsp;GB disk that Weeks 8 and 9 need. For a cloud-hosted lab instead, see the next section.",
+        "columns": [
+          "Script",
+          "What it does",
+          "Where it runs"
+        ],
+        "items": [
+          {
+            "name": "build-local-lab.sh",
+            "url": "https://github.com/learnlinuxforwork/rhcsa/blob/main/scripts/build-local-lab.sh",
+            "desc": "Creates <code>/rhcsa-labs</code>, tells you exactly which ISO to download into it, then builds both VMs in <strong>Oracle VirtualBox</strong> or <strong>VMware Workstation Pro</strong> — correct RAM, CPU, EFI firmware, NAT plus host-only networking, and the spare disk already attached. Run <code>--destroy</code> to wipe and start over.",
+            "meta": "Your Linux laptop",
+            "sub": "VirtualBox / VMware"
+          },
+          {
+            "name": "build-podman-lab.sh",
+            "url": "https://github.com/learnlinuxforwork/rhcsa/blob/main/scripts/build-podman-lab.sh",
+            "desc": "Two <strong>Rocky Linux 10 Podman containers</strong> with systemd running inside, for machines with no spare RAM at all. Good for Weeks 1–4, 10, and 11. <strong>It cannot do Weeks 5–9</strong> — containers share the host kernel, so storage, LVM, boot, and firewalld are off the table. The script says so plainly rather than pretending otherwise.",
+            "meta": "Any machine",
+            "sub": "Podman"
+          }
+        ],
+        "after": {
+          "title": "Getting the ISO onto a Linux laptop",
+          "bullets": [
+            "The script creates <code>/rhcsa-labs</code> and takes ownership of it for your user. Put the ISO there and it is found automatically.",
+            "<strong>RHEL 10</strong> — sign in and download from <a href=\"https://developers.redhat.com/products/rhel/download\" target=\"_blank\" rel=\"noopener\">developers.redhat.com/products/rhel/download</a>. It requires a free account, which is also what gives you the 16-system subscription.",
+            "<strong>Rocky 10</strong> — no account needed, so you can pull it straight from the terminal:<br><code>cd /rhcsa-labs &amp;&amp; curl -LO https://download.rockylinux.org/pub/rocky/10/isos/x86_64/Rocky-10-latest-x86_64-dvd.iso</code>",
+            "",
+            "Verify the checksum before you install. Every one of those pages publishes one, and a corrupted ISO wastes an afternoon."
+          ]
+        }
+      },
+      {
+        "step": "Option A",
+        "title": "Used laptops (cheapest, recommended to start)",
+        "intro": "Only if your current machine can't spare the memory. Off-lease corporate laptops are the best value in computing — look for an Intel i5/i7 or Ryzen 5/7, <strong>16 GB RAM</strong>, and a <strong>256 GB+ SSD</strong>. ThinkPad T/X, Dell Latitude, and HP EliteBook all have excellent Linux driver support.",
+        "columns": [
+          "Seller",
+          "What to expect",
+          "Condition"
+        ],
+        "items": [
+          {
+            "name": "eBay — Renew4me",
+            "url": "https://www.ebay.com/str/renew4me",
+            "desc": "Cleaned, tested, refurbished machines. Pay a little more, get something that works out of the box. Best first stop if this is your only lab machine.",
+            "meta": "Refurbished"
+          },
+          {
+            "name": "eBay — NurTech",
+            "url": "https://www.ebay.com/str/nurtech",
+            "desc": "Cheapest and roughest. Expect cosmetic damage and possible self-repairs (battery, keyboard, screen). Great value if you're comfortable with a screwdriver.",
+            "meta": "Budget / as-is"
+          },
+          {
+            "name": "Back Market",
+            "url": "https://www.backmarket.com/en-us/l/computers-laptops/41f464b5-9356-48d3-86c3-a2bf52ced60e#price=0&price=300",
+            "desc": "Marketplace of vetted refurbishers with a 1-year warranty and a 30-day return window — the safest used purchase if you have never bought refurbished before. That link is pre-filtered to laptops under $300.",
+            "meta": "Warrantied · under $300"
+          },
+          {
+            "name": "Refurb.me",
+            "url": "https://www.refurb.me/",
+            "desc": "Price tracker and aggregator for refurbished Macs, including Apple's own certified refurbished stock. Set an alert and wait for a deal rather than buying on the day you start looking.",
+            "meta": "Deal tracker"
+          },
+          {
+            "name": "Mac of All Trades",
+            "url": "https://www.macofalltrades.com/",
+            "desc": "Long-running used Mac dealer with graded conditions and warranties. Older Intel MacBook Pros land cheap here and make excellent Linux laptops.",
+            "meta": "Used Macs"
+          }
+        ],
+        "after": {
+          "title": "Yes — you can wipe a used MacBook and install Linux on it",
+          "bullets": [
+            "A used Mac is just a laptop. Wipe macOS entirely, install RHEL, Rocky, or Ubuntu, and you have a lab machine with a great screen, keyboard, and build quality for the price of a beat-up plastic PC.",
+            "<strong>Intel Macs (roughly 2012–2020) are the safe buy.</strong> Linux installs and runs on them the same way it does on any other x86 laptop — boot from USB, wipe the disk, done. These are the cheapest good laptops on the used market right now precisely because macOS has dropped support for many of them.",
+            "<strong>Apple Silicon Macs (M1 and later) are the harder path.</strong> Linux on them means <a href=\"https://asahilinux.org/\" target=\"_blank\" rel=\"noopener\">Asahi Linux</a>, which is impressive but still incomplete, and RHEL and Rocky do not target that hardware at all. For an RHCSA lab, buy Intel. If you already own an Apple Silicon Mac, use <a href=\"https://mac.getutm.app/\" target=\"_blank\" rel=\"noopener\">UTM</a> with the aarch64 RHEL ISO instead of wiping the machine.",
+            "Hold <code>Option</code> at boot to pick the USB installer. On a T2-chip Mac (2018–2020) you must first disable Secure Boot in Recovery → Startup Security Utility, or the installer will not boot.",
+            "Check the battery cycle count and the keyboard before you buy — the 2016–2019 butterfly keyboards were a known failure point."
+          ]
+        }
+      },
+      {
+        "step": "Option B",
+        "title": "Buy a new laptop built for Linux",
+        "intro": "If you'd rather not gamble on used hardware, these vendors ship Linux preinstalled and tested. More expensive, zero driver hunting.",
+        "columns": [
+          "Vendor",
+          "Notes",
+          "Based in"
+        ],
+        "items": [
+          {
+            "name": "Laptop with Linux",
+            "url": "https://laptopwithlinux.com",
+            "desc": "Clevo hardware, wide config options",
+            "meta": "Netherlands"
+          },
+          {
+            "name": "System76",
+            "url": "https://system76.com/",
+            "desc": "Clevo hardware; ships with Pop!_OS or Ubuntu",
+            "meta": "USA"
+          },
+          {
+            "name": "Framework",
+            "url": "https://frame.work/",
+            "desc": "Modular and repairable — highly customizable",
+            "meta": "USA"
+          },
+          {
+            "name": "Purism",
+            "url": "https://puri.sm/",
+            "desc": "Privacy and security focused, hardware kill switches",
+            "meta": "USA"
+          },
+          {
+            "name": "StarLabs",
+            "url": "https://us.starlabs.systems/",
+            "desc": "Compact Linux-first laptops, coreboot firmware",
+            "meta": "UK / USA"
+          },
+          {
+            "name": "NovaCustom",
+            "url": "https://novacustom.com/",
+            "desc": "Clevo hardware, coreboot options",
+            "meta": "Netherlands"
+          },
+          {
+            "name": "Tuxedo Computers",
+            "url": "https://www.tuxedocomputers.com/",
+            "desc": "Built in Germany, own TUXEDO OS",
+            "meta": "Germany"
+          },
+          {
+            "name": "Slimbook",
+            "url": "https://slimbook.com/en/",
+            "desc": "Assembled in Spain, thin and light",
+            "meta": "Spain"
+          },
+          {
+            "name": "NitroKey",
+            "url": "https://www.nitrokey.com/",
+            "desc": "Security-hardened hardware and keys",
+            "meta": "Germany"
+          },
+          {
+            "name": "Eurocom",
+            "url": "https://eurocom.com",
+            "desc": "Heavy-duty mobile workstations",
+            "meta": "Canada"
+          },
+          {
+            "name": "Lenovo ThinkPad",
+            "url": "https://www.lenovo.com/us/en/d/linux-laptops-desktops/",
+            "desc": "Certified Linux ThinkPads, easiest to buy",
+            "meta": "Global"
+          }
+        ]
+      },
+      {
+        "step": "Option C",
+        "title": "Add a home server later (optional)",
+        "intro": "Not needed for the RHCSA — two VMs on a laptop cover every objective. Worth it only if you plan to continue toward RHCE, Kubernetes, or the DevOps roadmap, where you will want a dozen VMs running permanently.",
+        "columns": [
+          "Vendor",
+          "Notes",
+          "Site"
+        ],
+        "items": [
+          {
+            "name": "The Server Store",
+            "url": "https://www.theserverstore.com/",
+            "desc": "Wide inventory, configure-to-order",
+            "meta": "theserverstore.com"
+          },
+          {
+            "name": "Server Monkey",
+            "url": "https://www.servermonkey.com/",
+            "desc": "Refurb servers, parts, warranties",
+            "meta": "servermonkey.com"
+          },
+          {
+            "name": "New Server Life (NSL)",
+            "url": "https://newserverlife.com/",
+            "desc": "Onsite colocation: Miami, Dallas, SF, Warsaw",
+            "meta": "newserverlife.com"
+          },
+          {
+            "name": "TechMikeNY on eBay",
+            "url": "https://www.ebay.com/str/techmikeny",
+            "desc": "Well-reviewed eBay storefront",
+            "meta": "ebay.com/str/techmikeny"
+          },
+          {
+            "name": "TechMikeNY (direct)",
+            "url": "https://techmikeny.com/",
+            "desc": "Buy direct, skip eBay fees",
+            "meta": "techmikeny.com"
+          },
+          {
+            "name": "SaveMyServer",
+            "url": "https://savemyserver.com/",
+            "desc": "Refurbished enterprise gear",
+            "meta": "savemyserver.com"
+          },
+          {
+            "name": "UsedServers",
+            "url": "https://www.usedservers.com/",
+            "desc": "Used servers, storage, networking",
+            "meta": "usedservers.com"
+          },
+          {
+            "name": "PC Server & Parts",
+            "url": "https://pcserverandparts.com/refurbished-servers/",
+            "desc": "Refurbished servers and spare parts",
+            "meta": "pcserverandparts.com"
+          }
+        ],
+        "after": {
+          "title": "What to run on it",
+          "bullets": [
+            "Target a Dell PowerEdge R630/R730 or HP DL360/DL380: dual CPUs, 64–128 GB RAM, a few hundred dollars. They are loud — a closet or garage is ideal.",
+            "<a href=\"https://www.proxmox.com/en/\" target=\"_blank\" rel=\"noopener\">Proxmox VE</a> is the home-lab default: Debian-based, web UI, KVM VMs plus LXC containers, snapshots, and clustering.",
+            "<a href=\"https://opennebula.io/\" target=\"_blank\" rel=\"noopener\">OpenNebula</a> is the alternative if you want something closer to a real private cloud. Steeper curve, better multi-node story."
+          ]
+        }
+      },
+      {
+        "step": "Option D",
+        "title": "Networking gear (optional)",
+        "intro": "Entirely optional for the RHCSA, which only asks for addressing, name resolution, and firewalld. Useful if you want to push toward hybrid-cloud and CCNA-level practice afterwards.",
+        "columns": [
+          "Hardware",
+          "What it's for",
+          ""
+        ],
+        "items": [
+          {
+            "name": "Protectli",
+            "url": "https://protectli.com/",
+            "desc": "Fanless firewall appliances. Run pfSense, OPNsense, or VyOS and build a real perimeter around the lab.",
+            "meta": "",
+            "sub": "protectli.com"
+          },
+          {
+            "name": "CCNA Lab Racks",
+            "url": "https://www.ebay.com/str/geonetworkusstore",
+            "desc": "Prebuilt racks of Cisco switches and routers — real IOS, real cabling, real console ports.",
+            "meta": "",
+            "sub": "eBay — GeoNetwork US"
+          }
+        ]
+      }
+    ]
+  },
+  "certs": {
+    "id": "certification-path",
+    "num": "05",
+    "eyebrow": "05 · Certification path",
+    "title": "The Certification Ladder",
+    "subtitle": "Two optional confidence builders before you spend $500 on the real thing",
+    "body": [
+      "RHCSA proves you can administer a Red Hat system. It is expensive and unforgiving — one sitting, performance-based, pass or fail. If you have never taken a certification exam, walking into that as your first one is a lot of pressure on a big cheque.",
+      "Three cheaper exams sit below it, in increasing order of difficulty. None is required. Each is worth considering if the cost of failing the RHCSA cold would set you back — and you can stop at any rung."
+    ],
+    "items": [
+      {
+        "n": 1,
+        "name": "LPI Linux Essentials",
+        "code": "010-160",
+        "codeUrl": "https://www.lpi.org/our-certifications/linux-essentials-overview/",
+        "level": "Entry level · optional starting point",
+        "week": 3,
+        "timing": "Optional — after Week 3",
+        "cost": "~$120",
+        "featured": false,
+        "why": "The gentlest on-ramp there is. Vendor-neutral, single exam, and aimed at people who are genuinely new to Linux rather than at working administrators. If you have never sat a proctored exam or you are still shaky on the command line after Week 3, this is a cheap, low-pressure way to prove to yourself that you can do this. Skip it if you already work in IT.",
+        "prep": [
+          {
+            "label": "Weeks 1–3 of this course",
+            "url": ""
+          },
+          {
+            "label": "LPI Linux Essentials overview",
+            "url": "https://www.lpi.org/our-certifications/linux-essentials-overview/"
+          },
+          {
+            "label": "Learn Linux For Work",
+            "url": "https://www.learnlinuxforwork.com"
+          }
+        ]
+      },
+      {
+        "n": 2,
+        "name": "CompTIA Linux+ (XK0-006, v8)",
+        "code": "XK0-006",
+        "codeUrl": "https://www.comptia.org/en-us/certifications/linux/",
+        "level": "Foundational · optional confidence builder",
+        "week": 6,
+        "timing": "Optional — after Week 6",
+        "cost": "~$369",
+        "featured": false,
+        "why": "Vendor-neutral and broader than RHCSA — it covers scripting, security, and troubleshooting across distributions, and the current version leans into automation and cloud-adjacent topics. It is partly multiple-choice, so it is a gentler introduction to sitting a timed, proctored exam. If you pass it, you will walk into the RHCSA knowing you can handle the room.",
+        "prep": [
+          {
+            "label": "Weeks 1–6 of this course cover most of it",
+            "url": ""
+          },
+          {
+            "label": "Learn Linux For Work",
+            "url": "https://www.learnlinuxforwork.com"
+          }
+        ]
+      },
+      {
+        "n": 3,
+        "name": "Linux Foundation Certified Systems Administrator",
+        "code": "LFCS",
+        "codeUrl": "https://tidd.ly/4pCL8rI",
+        "level": "Associate · optional confidence builder",
+        "week": 9,
+        "timing": "Optional — after Week 9",
+        "cost": "~$395",
+        "featured": false,
+        "why": "The closest thing to an RHCSA dress rehearsal. It is also performance-based — a real terminal, real tasks, a timer — but it is distro-flexible and slightly more forgiving. The overlap with RHCSA is large: users, permissions, storage, networking, services, and scripting. Sitting LFCS first means the RHCSA format holds no surprises. Linux Foundation exam registrations include access to the killer.sh simulator, which is the closest you will get to sitting the real thing beforehand.",
+        "prep": [
+          {
+            "label": "Weeks 1–9 of this course cover the overlap",
+            "url": ""
+          },
+          {
+            "label": "Linux Foundation training",
+            "url": "https://tidd.ly/4pCL8rI"
+          },
+          {
+            "label": "killer.sh exam simulator",
+            "url": "https://killer.sh/"
+          }
+        ]
+      },
+      {
+        "n": 4,
+        "name": "Red Hat Certified System Administrator",
+        "code": "EX200",
+        "codeUrl": "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam",
+        "level": "The goal · performance-based on RHEL 10",
+        "week": 12,
+        "timing": "End of Week 12",
+        "cost": "~$500",
+        "featured": true,
+        "why": "The one employers ask for by name in Red Hat shops, and a hard prerequisite for RHCE. Entirely hands-on, entirely on RHEL 10, and everything must survive a reboot.",
+        "prep": [
+          {
+            "label": "All 12 weeks of this course",
+            "url": ""
+          },
+          {
+            "label": "Hands-on mock exams",
+            "url": "https://linuxcert.guru/"
+          },
+          {
+            "label": "Red Hat Interactive Labs",
+            "url": "https://www.redhat.com/en/interactive-labs"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "kind": "info",
+      "title": "Skip both if you're confident and short on money",
+      "text": "Linux+ and LFCS together cost more than the RHCSA itself. They are confidence builders, not prerequisites — nothing about them makes your RHCSA more likely to pass beyond the practice and the calmer nerves. If you have sat proctored exams before and money is tight, go straight at EX200 and put the savings toward a retake voucher instead. After RHCSA, the natural next step is <a href=\"https://www.redhat.com/en/services/training/ex294-red-hat-certified-engineer-rhce-exam-red-hat-enterprise-linux\" target=\"_blank\" rel=\"noopener\">RHCE (EX294)</a>, which is Ansible automation."
+    },
+    "dod": {
+      "title": "If you work for a U.S. government contractor: DoD 8140",
+      "intro": [
+        "<strong>DoD Directive 8140</strong> — which replaced DoD 8570.01-M — governs cyber workforce qualification across the Department of Defense and its contractors. If you administer DoD systems, the certifications you hold are not a nice-to-have. They decide whether you are allowed to hold an account at all.",
+        "The part that matters most to a Linux administrator is <strong>privileged user access (PUA)</strong>. A privileged account — root, sudo, anything that can change a system's security posture — generally requires two things, not one:"
+      ],
+      "requirements": [
+        "<strong>A baseline security certification</strong> for the work role and level. <a href=\"https://www.comptia.org/en-us/certifications/security/\" target=\"_blank\" rel=\"noopener\">CompTIA Security+</a> is the long-standing entry point and the one most contracts name by default. <a href=\"https://www.comptia.org/en-us/certifications/cybersecurity-analyst/\" target=\"_blank\" rel=\"noopener\">CompTIA CySA+</a> covers analyst and higher-tier roles, and is the usual next step.",
+        "<strong>A computing environment (CE) certification</strong> for the platform you actually administer. <strong>This is where the RHCSA comes in.</strong> For Red Hat Enterprise Linux estates — which is most of the federal Linux footprint — the RHCSA is the standard CE credential."
+      ],
+      "pairing": {
+        "title": "The pairing that unlocks a privileged account",
+        "text": "<strong>RHCSA + Security+</strong> is the combination you will see on the majority of federal Linux system administrator job postings. The RHCSA proves you can run the platform; Security+ satisfies the baseline requirement. Add <strong>CySA+</strong> when you move toward security operations or a higher IAT tier. Many contractors will not onboard you to a privileged role until both are in hand, and quite a few will pay for the second one once you have the first."
+      },
+      "note": {
+        "kind": "warn",
+        "title": "Verify before you spend money on this",
+        "text": "DoD 8140 moved from a fixed certification matrix to a <strong>work-role-based qualification framework</strong>, and the approved certification lists are revised periodically. What your specific contract, agency, and work role require may differ from the general pattern above. Check the current lists on the <a href=\"https://public.cyber.mil/wid/dod8140/\" target=\"_blank\" rel=\"noopener\">DoD Cyber Exchange</a> and confirm with your facility security officer or contract lead <em>before</em> booking an exam on the strength of this section."
+      }
+    }
+  },
+  "coverage": {
+    "id": "coverage-map",
+    "num": "06",
+    "eyebrow": "06 · Coverage",
+    "title": "Exam Objective Coverage Map",
+    "subtitle": "All ten of Red Hat's EX200 objective domains, mapped to the week that covers them",
+    "intro": "Red Hat groups the EX200 objectives into ten categories. Every one is covered, and nothing here is filler. If you can do everything in the right-hand column without notes, you are ready.",
+    "columns": [
+      "Red Hat objective domain",
+      "What you'll actually be able to do",
+      "Week"
+    ],
+    "rows": [
+      [
+        "Understand and use essential tools",
+        "Shell syntax, redirection and pipes, grep with regular expressions, SSH to remote systems, switching users, tar/gzip/bzip2 archives, creating and editing files, hard and soft links, ugo/rwx permissions, and finding answers in man, info, and /usr/share/doc",
+        "1"
+      ],
+      [
+        "Manage users and groups",
+        "Create, modify, and delete local users and groups, set and age passwords, manage supplementary group membership, and configure privileged access with sudo",
+        "2"
+      ],
+      [
+        "Manage software",
+        "Configure RPM repository access, install and remove RPM packages, configure Flatpak remotes, and install and remove Flatpak applications",
+        "3"
+      ],
+      [
+        "Operate running systems — processes",
+        "Identify CPU and memory hogs, kill processes, adjust scheduling priority, manage tuned profiles, and schedule work with at, cron, and systemd timers",
+        "4"
+      ],
+      [
+        "Operate running systems — boot and services",
+        "Boot, reboot, and shut down cleanly, boot into different targets, interrupt the boot process to recover a system, set the default target, start/stop/enable services, and modify the bootloader",
+        "5"
+      ],
+      [
+        "Operate running systems — logs and time",
+        "Locate and read system logs and journals, make the journal persistent, and configure time service clients",
+        "6"
+      ],
+      [
+        "Manage basic networking",
+        "Configure IPv4 and IPv6 addresses, set hostname resolution, make network services start at boot, and restrict access with firewalld and firewall-cmd",
+        "7"
+      ],
+      [
+        "Configure local storage",
+        "List, create, and delete GPT partitions, add swap non-destructively, and mount filesystems at boot by UUID or label",
+        "8"
+      ],
+      [
+        "Create and configure file systems",
+        "Create and mount VFAT, ext4, and XFS filesystems, build and extend LVM volumes, mount NFS shares, configure autofs, and diagnose permission problems",
+        "9"
+      ],
+      [
+        "Manage security",
+        "Set SELinux enforcing and permissive modes, read and restore file contexts, manage port labels and booleans, configure key-based SSH authentication, and set default permissions with umask",
+        "10"
+      ],
+      [
+        "Create simple shell scripts",
+        "Conditional execution with if and test, loops to process files and input, positional parameters, and using the output of commands inside a script",
+        "11"
+      ],
+      [
+        "<em>Putting it together</em>",
+        "A full timed mock exam under real conditions, remediation of everything you missed, and exam-day logistics",
+        "12"
+      ]
+    ]
+  },
+  "weeks": {
+    "id": "the-plan",
+    "num": "07",
+    "eyebrow": "07 · The plan",
+    "title": "The 12-Week Plan",
+    "subtitle": "Check tasks off as you go — your progress is saved in this browser",
+    "items": [
+      {
+        "id": "week-01",
+        "n": 1,
+        "title": "Essential Tools and the Shell",
+        "domain": "Understand and use essential tools",
+        "hours": "8–10",
+        "summary": "The commands you will use in every other week. Get fast here and everything downstream gets easier.",
+        "tasks": [
+          "Navigate the filesystem hierarchy and explain what lives in /etc, /var, /usr, and /home",
+          "Use redirection and pipes fluently: >, >>, |, 2>, 2>&1, and tee",
+          "Search text with grep and basic regular expressions — anchors, character classes, and quantifiers",
+          "Create, copy, move, and delete files and directories, including recursively and safely",
+          "Create hard links and symbolic links, and explain when each breaks",
+          "Read and set ugo/rwx permissions in both symbolic and octal form",
+          "Archive and compress with tar, gzip, and bzip2, and unpack all three",
+          "Connect to your second machine over SSH and switch users with su and sudo",
+          "Find answers using man, man -k, info, and /usr/share/doc — no search engine"
+        ],
+        "objectives": [
+          "Access a shell prompt and issue commands with correct syntax",
+          "Use input-output redirection",
+          "Use grep and regular expressions to analyze text",
+          "Access remote systems using SSH",
+          "Log in and switch users in multi-user targets",
+          "Archive, compress, unpack, and uncompress files",
+          "Create and edit text files",
+          "Create, delete, copy, and move files and directories",
+          "Create hard and soft links",
+          "List, set, and change standard ugo/rwx permissions",
+          "Locate, read, and use system documentation"
+        ]
+      },
+      {
+        "id": "week-02",
+        "n": 2,
+        "title": "Users, Groups, and Privileged Access",
+        "domain": "Manage users and groups",
+        "hours": "8–10",
+        "summary": "Small domain, heavily tested, and easy marks — as long as you also get the sudo configuration right.",
+        "tasks": [
+          "Create, modify, and delete local user accounts with useradd, usermod, and userdel",
+          "Read /etc/passwd, /etc/shadow, and /etc/group and explain every field",
+          "Set and change passwords, and configure password aging with chage",
+          "Create and delete groups, and manage primary versus supplementary membership",
+          "Configure sudo access for a user and for a group using a drop-in file in /etc/sudoers.d",
+          "Set up an account that must change its password at first login",
+          "Configure defaults for new accounts with /etc/skel and useradd -D"
+        ],
+        "objectives": [
+          "Create, delete, and modify local user accounts",
+          "Change passwords and adjust password aging for local user accounts",
+          "Create, delete, and modify local groups and group memberships",
+          "Configure privileged access"
+        ]
+      },
+      {
+        "id": "week-03",
+        "n": 3,
+        "title": "Software: RPM, Repositories, and Flatpak",
+        "domain": "Manage software",
+        "hours": "8–10",
+        "summary": "RHEL 10 added Flatpak to the objectives. Most study material predates that — do not skip it.",
+        "tasks": [
+          "Install, remove, and query packages with dnf and rpm",
+          "Configure access to an RPM repository by writing a .repo file in /etc/yum.repos.d",
+          "Install a package from a local file, from a configured repository, and from the Red Hat CDN",
+          "List enabled repositories, and enable or disable one temporarily and permanently",
+          "Find which package owns a given file, and list the files a package installed",
+          "Configure access to a Flatpak remote",
+          "Install, list, run, and remove a Flatpak application",
+          "Explain the difference between an RPM and a Flatpak, and when each is appropriate"
+        ],
+        "objectives": [
+          "Configure access to RPM repositories",
+          "Install and remove RPM software packages",
+          "Configure access to Flatpak repositories",
+          "Install and remove Flatpak software packages",
+          "Install and update software packages from Red Hat CDN, a remote repository, or the local file system"
+        ]
+      },
+      {
+        "id": "week-04",
+        "n": 4,
+        "title": "Processes, Tuning, and Scheduled Tasks",
+        "domain": "Operate running systems",
+        "hours": "8–10",
+        "summary": "Finding the runaway process, changing its priority, and making work happen on a schedule.",
+        "tasks": [
+          "Identify CPU and memory intensive processes with ps, top, and uptime",
+          "Send signals with kill, killall, and pkill, and explain SIGTERM versus SIGKILL",
+          "Adjust scheduling priority with nice and renice",
+          "List, query, and switch tuned profiles with tuned-adm",
+          "Schedule a one-off job with at",
+          "Schedule recurring jobs with cron, both as root and as a regular user",
+          "Create a systemd timer unit and its matching service unit, and enable it",
+          "Explain when to reach for a timer instead of cron"
+        ],
+        "objectives": [
+          "Identify CPU/memory intensive processes and kill processes",
+          "Adjust process scheduling",
+          "Manage tuning profiles",
+          "Schedule tasks using at, cron and systemd timer units"
+        ]
+      },
+      {
+        "id": "week-05",
+        "n": 5,
+        "title": "Boot, Targets, Services, and Recovery",
+        "domain": "Operate running systems",
+        "hours": "8–10",
+        "summary": "The week that saves you if something goes wrong in the exam. Learn to break the boot and recover it.",
+        "tasks": [
+          "Boot, reboot, and shut down cleanly with systemctl",
+          "List available targets and switch between them at runtime",
+          "Set the default boot target permanently",
+          "Interrupt the boot process at the GRUB menu and boot to an emergency shell",
+          "Reset a forgotten root password from that shell, including the SELinux relabel step",
+          "Start, stop, restart, enable, disable, and check the status of services",
+          "Explain the difference between started and enabled, and why it matters after a reboot",
+          "Modify the bootloader configuration and regenerate it correctly"
+        ],
+        "objectives": [
+          "Boot, reboot, and shut down a system normally",
+          "Boot systems into different targets manually",
+          "Interrupt the boot process in order to gain access to a system",
+          "Start and stop services and configure services to start automatically at boot",
+          "Configure systems to boot into a specific target automatically",
+          "Modify the system bootloader",
+          "Start, stop, and check the status of network services"
+        ]
+      },
+      {
+        "id": "week-06",
+        "n": 6,
+        "title": "Logs, Journals, and Time",
+        "domain": "Operate running systems",
+        "hours": "8–10",
+        "summary": "Where to look when something is broken, and how to make the evidence survive a reboot.",
+        "tasks": [
+          "Read the journal with journalctl and filter by unit, priority, boot, and time range",
+          "Make the systemd journal persistent across reboots and verify it worked",
+          "Locate and interpret traditional log files under /var/log",
+          "Explain the relationship between journald and rsyslog on RHEL",
+          "Configure a time service client with chrony and confirm synchronisation",
+          "Set the system timezone and read the hardware versus system clock",
+          "Securely transfer files between your two machines with scp, sftp, and rsync"
+        ],
+        "objectives": [
+          "Locate and interpret system log files and journals",
+          "Preserve system journals",
+          "Configure time service clients",
+          "Securely transfer files between systems"
+        ]
+      },
+      {
+        "id": "week-07",
+        "n": 7,
+        "title": "Networking and firewalld",
+        "domain": "Manage basic networking",
+        "hours": "8–10",
+        "summary": "Static addressing that survives a reboot, name resolution, and a firewall that lets the right things through.",
+        "tasks": [
+          "Inspect current configuration with ip addr, ip route, and nmcli",
+          "Configure a static IPv4 address, gateway, and DNS with nmcli and make it persistent",
+          "Configure an IPv6 address on the same interface",
+          "Set the system hostname with hostnamectl",
+          "Configure name resolution using /etc/hosts and /etc/resolv.conf, and test with getent and dig",
+          "Confirm NetworkManager is enabled so networking comes up at boot",
+          "List firewalld zones and services, and inspect the active zone",
+          "Open a service and a specific port permanently, then reload and verify",
+          "Reboot and confirm every one of the above survived"
+        ],
+        "objectives": [
+          "Configure IPv4 and IPv6 addresses",
+          "Configure hostname resolution",
+          "Configure network services to start automatically at boot",
+          "Restrict network access using firewalld and firewall-cmd"
+        ]
+      },
+      {
+        "id": "week-08",
+        "n": 8,
+        "title": "Partitions, Filesystems, and Swap",
+        "domain": "Configure local storage",
+        "hours": "10–12",
+        "summary": "This is where the second disk you added in the home lab starts earning its keep.",
+        "tasks": [
+          "List block devices and existing partitions with lsblk, blkid, and fdisk -l",
+          "Create a GPT partition table and add partitions on your spare disk",
+          "Delete a partition and explain why the kernel may not notice immediately",
+          "Format partitions as XFS, ext4, and VFAT",
+          "Mount filesystems manually, then persistently via /etc/fstab using UUID",
+          "Mount by label as well, and explain when a label beats a UUID",
+          "Add a swap partition non-destructively and enable it at boot",
+          "Reboot and verify every mount and the swap came back automatically"
+        ],
+        "objectives": [
+          "List, create, and delete partitions on GPT disks",
+          "Configure systems to mount file systems at boot by UUID or label",
+          "Add new partitions and logical volumes, and swap to a system non-destructively",
+          "Create, mount, unmount, and use VFAT, ext4, and XFS file systems"
+        ]
+      },
+      {
+        "id": "week-09",
+        "n": 9,
+        "title": "LVM, NFS, and autofs",
+        "domain": "Create and configure file systems",
+        "hours": "10–12",
+        "summary": "Logical volumes you can grow, network filesystems you can mount, and permission problems you can diagnose.",
+        "tasks": [
+          "Create physical volumes, a volume group, and logical volumes",
+          "Format and mount a logical volume persistently",
+          "Extend a volume group by adding a physical volume",
+          "Extend a logical volume and grow the filesystem on it, online, without data loss",
+          "Remove a logical volume and a physical volume cleanly",
+          "Export a directory over NFS from your second machine",
+          "Mount that NFS share manually and then persistently",
+          "Configure autofs to mount the share on demand and verify it unmounts when idle",
+          "Diagnose and correct a deliberately broken set of file permissions"
+        ],
+        "objectives": [
+          "Create and remove physical volumes",
+          "Assign physical volumes to volume groups",
+          "Create and delete logical volumes",
+          "Extend existing logical volumes",
+          "Mount and unmount network file systems using NFS",
+          "Configure autofs",
+          "Diagnose and correct file permission problems"
+        ]
+      },
+      {
+        "id": "week-10",
+        "n": 10,
+        "title": "SELinux, SSH Keys, and Default Permissions",
+        "domain": "Manage security",
+        "hours": "10–12",
+        "summary": "The domain that trips up more candidates than any other. Do not set SELinux to permissive and move on.",
+        "tasks": [
+          "Check and set SELinux mode with getenforce and setenforce, and make it persistent",
+          "List file and process contexts with ls -Z and ps -Z",
+          "Change a file context with chcon and explain why it does not survive a relabel",
+          "Set a persistent context rule with semanage fcontext and apply it with restorecon",
+          "Add a non-standard port to an SELinux port label so a service can bind to it",
+          "List booleans with getsebool and flip one persistently with setsebool -P",
+          "Read an SELinux denial in the logs and work out what it is telling you",
+          "Generate an SSH key pair and configure key-based authentication to your second machine",
+          "Set default file permissions with umask for a user and system-wide"
+        ],
+        "objectives": [
+          "Set enforcing and permissive modes for SELinux",
+          "List and identify SELinux file and process context",
+          "Restore default file contexts",
+          "Manage SELinux port labels",
+          "Use Boolean settings to modify system SELinux settings",
+          "Configure key-based authentication for SSH",
+          "Manage default file permissions",
+          "Configure firewall settings using firewall-cmd/firewalld"
+        ]
+      },
+      {
+        "id": "week-11",
+        "n": 11,
+        "title": "Shell Scripting",
+        "domain": "Create simple shell scripts",
+        "hours": "8–10",
+        "summary": "Only simple scripts are tested. You need conditionals, loops, arguments, and command substitution — nothing exotic.",
+        "tasks": [
+          "Write a script with a proper shebang and make it executable",
+          "Use if, elif, else with test and [ ] to branch on a condition",
+          "Test for file existence, directory existence, string equality, and numeric comparison",
+          "Write a for loop that iterates over a list, a glob, and the lines of a file",
+          "Use a while loop to read input line by line",
+          "Handle positional parameters $1, $2, $@, and $#, and fail cleanly when they are missing",
+          "Capture and use the output of a command with $( )",
+          "Check exit statuses with $? and make your script return a meaningful one",
+          "Re-read the whole EX200 objective list and mark anything still shaky"
+        ],
+        "objectives": [
+          "Conditionally execute code (use of: if, test, [], etc.)",
+          "Use looping constructs (for, etc.) to process files and command line input",
+          "Process script inputs ($1, $2, etc.)",
+          "Processing output of shell commands within a script"
+        ]
+      },
+      {
+        "id": "week-12",
+        "n": 12,
+        "title": "Mock Exam, Remediation, and Exam Day",
+        "domain": "Putting it together",
+        "hours": "10–12",
+        "summary": "Sit a full timed mock under real conditions. Then fix what it exposed, and book the exam.",
+        "tasks": [
+          "Roll both lab machines back to a clean snapshot",
+          "Sit a full timed mock exam — no notes, no internet, man pages only",
+          "Reboot at the end and re-check every task; score only what survived",
+          "Write down every objective you missed or had to look up",
+          "Rebuild the labs for each missed objective from scratch, untimed",
+          "Sit a second timed mock later in the week and target a clean pass",
+          "Book the real EX200 while the second mock is still fresh",
+          "Read the exam-day checklist in Section 10 and prepare your ID and environment"
+        ],
+        "objectives": [
+          "All EX200 objective domains, under exam conditions",
+          "Configurations must persist after reboot without intervention"
+        ]
+      }
+    ]
+  },
+  "labs": {
+    "id": "lab-guides",
+    "num": "08",
+    "eyebrow": "08 · Lab guides",
+    "title": "Lab Guides",
+    "subtitle": "One standalone guide per week — real commands, verification steps, and a break/fix drill",
+    "intro": "Each guide is a self-contained page you can work through at the terminal. Every one follows the same shape: what you're building, the commands, how to verify it, a deliberate break to repair, and a reboot check. They print cleanly if you'd rather work from paper.",
+    "note": {
+      "kind": "info",
+      "title": "How to use a lab guide",
+      "text": "Read the whole guide first. Then close it and try the tasks from memory. Open it again only when you're stuck — and when you do, write down what you had to look up. That list is your real study guide for Week 12."
+    },
+    "download": {
+      "title": "Download the eBook",
+      "text": "The whole course as a single PDF you can read offline or print — same content, same structure, with every link clickable.",
+      "url": "Free_RHCSA_Course_eBook.pdf",
+      "label": "Free RHCSA Course eBook (PDF, 23 pages)"
+    }
+  },
+  "resources": {
+    "id": "resources",
+    "num": "09",
+    "eyebrow": "09 · Resources",
+    "title": "Core Resource List",
+    "subtitle": "Free and low-cost, and every one of them is linked",
+    "groups": [
+      {
+        "category": "The authoritative source",
+        "items": [
+          {
+            "name": "EX200 exam objectives",
+            "url": "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam",
+            "desc": "Red Hat's official objective list. The only definitive statement of what is testable. Re-read it in Week 11."
+          },
+          {
+            "name": "Red Hat product documentation",
+            "url": "https://docs.redhat.com/en",
+            "desc": "Free, thorough, written by the vendor. The RHEL 10 system administration guides map closely to the exam domains."
+          },
+          {
+            "name": "Red Hat Interactive Labs",
+            "url": "https://www.redhat.com/en/interactive-labs",
+            "desc": "Free browser-based RHEL labs. Zero setup — good for a quick repetition away from your own machines."
+          },
+          {
+            "name": "Red Hat Developer",
+            "url": "https://developers.redhat.com/",
+            "desc": "Free developer subscription, downloads, and a large library of articles and cheat sheets."
+          }
+        ]
+      },
+      {
+        "category": "Getting the operating system",
+        "items": [
+          {
+            "name": "RHEL 10 Developer Edition",
+            "url": "https://developers.redhat.com/products/rhel/download",
+            "desc": "Free for up to 16 systems. This is what you should practise on."
+          },
+          {
+            "name": "Developer subscription FAQ",
+            "url": "https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux",
+            "desc": "The terms of the no-cost individual developer subscription, in plain language."
+          },
+          {
+            "name": "Rocky Linux 10",
+            "url": "https://rockylinux.org/",
+            "desc": "Free RHEL 10 rebuild, no account, no limits."
+          },
+          {
+            "name": "Ubuntu",
+            "url": "https://ubuntu.com/",
+            "desc": "Not for exam practice — but the easiest Linux to install on the laptop or server that will <em>host</em> your RHEL and Rocky virtual machines. Also the distro you are most likely to meet at work."
+          }
+        ]
+      },
+      {
+        "category": "Hypervisors and home lab",
+        "items": [
+          {
+            "name": "Oracle VirtualBox",
+            "url": "https://www.virtualbox.org/",
+            "desc": "Free, cross-platform, one-click snapshots. The default recommendation for this course."
+          },
+          {
+            "name": "VMware Workstation Pro",
+            "url": "https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion",
+            "desc": "Free for personal use under Broadcom. Faster disk and network than VirtualBox on most hardware."
+          },
+          {
+            "name": "KVM / virt-manager",
+            "url": "https://virt-manager.org/",
+            "desc": "If your host is already Linux — the same stack RHEL itself uses, so the skills transfer."
+          },
+          {
+            "name": "UTM",
+            "url": "https://mac.getutm.app/",
+            "desc": "The practical option on Apple Silicon, where VirtualBox does not run. Use the aarch64 RHEL ISO."
+          },
+          {
+            "name": "Proxmox VE",
+            "url": "https://www.proxmox.com/en/",
+            "desc": "Bare-metal hypervisor for a dedicated box. Overkill for RHCSA alone, worth it if you continue."
+          },
+          {
+            "name": "OpenNebula",
+            "url": "https://opennebula.io/",
+            "desc": "Full private-cloud platform. Steeper curve, better multi-node story."
+          }
+        ]
+      },
+      {
+        "category": "Hardware — used and new",
+        "items": [
+          {
+            "name": "Back Market",
+            "url": "https://www.backmarket.com/en-us/l/computers-laptops/41f464b5-9356-48d3-86c3-a2bf52ced60e#price=0&price=300",
+            "desc": "Vetted refurbished laptops with a 1-year warranty, pre-filtered under $300."
+          },
+          {
+            "name": "eBay — Renew4me",
+            "url": "https://www.ebay.com/str/renew4me",
+            "desc": "Cleaned and tested refurbished machines."
+          },
+          {
+            "name": "eBay — NurTech",
+            "url": "https://www.ebay.com/str/nurtech",
+            "desc": "Cheapest and roughest. Fine if you own a screwdriver."
+          },
+          {
+            "name": "Refurb.me",
+            "url": "https://www.refurb.me/",
+            "desc": "Price tracker for refurbished Macs. Set an alert and wait for a deal."
+          },
+          {
+            "name": "Mac of All Trades",
+            "url": "https://www.macofalltrades.com/",
+            "desc": "Used Macs with warranties. Wipe an Intel MacBook Pro and install Linux."
+          },
+          {
+            "name": "Asahi Linux",
+            "url": "https://asahilinux.org/",
+            "desc": "Linux on Apple Silicon. Impressive but incomplete — buy Intel for an RHCSA lab."
+          },
+          {
+            "name": "System76",
+            "url": "https://system76.com/",
+            "desc": "New Linux-first laptops, Pop!_OS or Ubuntu preinstalled."
+          },
+          {
+            "name": "Framework",
+            "url": "https://frame.work/",
+            "desc": "Modular and repairable, highly customizable."
+          },
+          {
+            "name": "Lenovo ThinkPad",
+            "url": "https://www.lenovo.com/us/en/d/linux-laptops-desktops/",
+            "desc": "Certified Linux ThinkPads, easiest to buy."
+          },
+          {
+            "name": "Tuxedo Computers",
+            "url": "https://www.tuxedocomputers.com/",
+            "desc": "Built in Germany, ships with its own Linux."
+          },
+          {
+            "name": "The Server Store",
+            "url": "https://www.theserverstore.com/",
+            "desc": "Used enterprise servers if you outgrow a laptop."
+          },
+          {
+            "name": "TechMikeNY",
+            "url": "https://techmikeny.com/",
+            "desc": "Refurbished servers, buy direct."
+          }
+        ]
+      },
+      {
+        "category": "Practice under pressure",
+        "items": [
+          {
+            "name": "LinuxCert Guru",
+            "url": "https://linuxcert.guru/",
+            "desc": "Hands-on, timed, performance-based RHCSA mock exams. Your Week 12 checkpoint."
+          },
+          {
+            "name": "LabEx",
+            "url": "https://tidd.ly/4yFi0UN",
+            "desc": "Guided live-environment Linux labs. Useful for extra repetitions between modules."
+          },
+          {
+            "name": "KodeKloud",
+            "url": "https://tidd.ly/4fBRIub",
+            "desc": "Browser-based Linux and DevOps playgrounds with no setup."
+          },
+          {
+            "name": "Learn Linux For Work — hands-on labs",
+            "url": "https://www.learnlinuxforwork.com",
+            "desc": "Guided browser-based Linux labs. No hypervisor, no download, nothing to install."
+          }
+        ]
+      },
+      {
+        "category": "Training and community",
+        "items": [
+          {
+            "name": "Learn Linux For Work",
+            "url": "https://www.learnlinuxforwork.com",
+            "desc": "Structured, work-focused Linux training built for people heading into system administration roles."
+          },
+          {
+            "name": "Doc Linux",
+            "url": "https://learnlinuxforwork.com/doc-linux",
+            "desc": "Command reference and syntax lookups. Keep it open in a second tab while you lab."
+          },
+          {
+            "name": "Kubecraft Linux",
+            "url": "https://www.skool.com/linux/classroom",
+            "desc": "Community classroom for Linux and Kubernetes — lessons plus people to ask when you're stuck."
+          },
+          {
+            "name": "The Hood",
+            "url": "https://learnlinuxforwork.com/the-hood",
+            "desc": "Community space for questions and support."
+          },
+          {
+            "name": "r/linuxadmin",
+            "url": "https://www.reddit.com/r/linuxadmin/",
+            "desc": "Plus r/redhat. Good for sanity checks and other people's exam-day write-ups."
+          },
+          {
+            "name": "Shea's Tech on YouTube",
+            "url": "https://www.youtube.com/@sheastech?sub_confirmation=1",
+            "desc": "Video walkthroughs, including what a Red Hat certification exam is actually like."
+          }
+        ]
+      },
+      {
+        "category": "The confidence-builder exams",
+        "items": [
+          {
+            "name": "CompTIA Linux+ (XK0-006, v8)",
+            "url": "https://www.comptia.org/en-us/certifications/linux/",
+            "desc": "Vendor-neutral, partly multiple-choice. A gentler first proctored exam. Optional."
+          },
+          {
+            "name": "Linux Foundation — LFCS",
+            "url": "https://tidd.ly/4pCL8rI",
+            "desc": "Performance-based and distro-flexible. The closest thing to an RHCSA dress rehearsal. Optional."
+          },
+          {
+            "name": "LPI — Linux Essentials",
+            "url": "https://www.lpi.org/our-certifications/linux-essentials-overview/",
+            "desc": "The gentlest vendor-neutral entry point. One exam, aimed at genuine beginners. A low-pressure first proctored exam before the harder ones."
+          },
+          {
+            "name": "Linux Foundation training and certification",
+            "url": "https://tidd.ly/4pCL8rI",
+            "desc": "LFCS, LFCE, and the Kubernetes track (CKA, CKAD, CKS). Performance-based and distro-flexible."
+          },
+          {
+            "name": "killer.sh",
+            "url": "https://killer.sh/",
+            "desc": "Exam simulators for Linux Foundation certifications. LFCS and Kubernetes exam registrations include simulator sessions — use them before the real sitting."
+          }
+        ]
+      },
+      {
+        "category": "Scripting and fundamentals",
+        "items": [
+          {
+            "name": "Automate the Boring Stuff",
+            "url": "https://automatetheboringstuff.com/",
+            "desc": "Free online. Practical Python for sysadmin-style tasks, useful once you're past Week 11."
+          },
+          {
+            "name": "Pro Git book",
+            "url": "https://git-scm.com/book/en/v2",
+            "desc": "Free online. Not on the exam, but you will want version control for your break/fix log."
+          },
+          {
+            "name": "OverTheWire Bandit",
+            "url": "https://overthewire.org/wargames/bandit/",
+            "desc": "Free shell puzzles. A fun way to build command-line reflexes in Weeks 1–2."
+          },
+          {
+            "name": "Google SRE Book",
+            "url": "https://sre.google/sre-book/table-of-contents/",
+            "desc": "Free online. Where to go once the certification is behind you."
+          }
+        ]
+      },
+      {
+        "category": "After the RHCSA",
+        "items": [
+          {
+            "name": "RHCE (EX294)",
+            "url": "https://www.redhat.com/en/services/training/ex294-red-hat-certified-engineer-rhce-exam-red-hat-enterprise-linux",
+            "desc": "Ansible automation. The natural next step, and it requires a current RHCSA."
+          },
+          {
+            "name": "Free DevOps Roadmap",
+            "url": "https://free.learnlinuxforwork.com",
+            "desc": "The 54-week Linux-to-AWS DevOps roadmap. RHCSA is its Phase 0 — this course is that phase, in depth."
+          },
+          {
+            "name": "Ansible documentation",
+            "url": "https://docs.ansible.com/",
+            "desc": "Start here the day after you pass."
+          }
+        ]
+      },
+      {
+        "category": "Cloud providers for a hosted lab",
+        "items": [
+          {
+            "name": "Google Cloud",
+            "url": "https://console.cloud.google.com/",
+            "desc": "Rocky Linux 10 images are published in the rocky-linux-cloud project. New accounts get free credit. Use scripts/build-cloud-lab.sh gcp."
+          },
+          {
+            "name": "Google Cloud SDK",
+            "url": "https://cloud.google.com/sdk/docs/install",
+            "desc": "Install gcloud, then run 'gcloud init' before using the lab script."
+          },
+          {
+            "name": "DigitalOcean",
+            "url": "https://cloud.digitalocean.com/",
+            "desc": "Simplest pricing of the four and a Rocky 10 image in the catalogue. Use scripts/build-cloud-lab.sh do."
+          },
+          {
+            "name": "doctl (DigitalOcean CLI)",
+            "url": "https://docs.digitalocean.com/reference/doctl/how-to/install/",
+            "desc": "Needed by the cloud lab script for DigitalOcean."
+          },
+          {
+            "name": "AWS EC2",
+            "url": "https://console.aws.amazon.com/ec2/",
+            "desc": "Rocky 10 AMIs are in the Marketplace. Free tier does not cover t3.medium, so watch the bill. Use scripts/build-cloud-lab.sh aws."
+          },
+          {
+            "name": "AWS CLI",
+            "url": "https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html",
+            "desc": "Needed by the cloud lab script for AWS."
+          },
+          {
+            "name": "Vultr",
+            "url": "https://my.vultr.com/",
+            "desc": "Cheap hourly instances and block storage for the LVM labs. Use scripts/build-cloud-lab.sh vultr."
+          },
+          {
+            "name": "vultr-cli",
+            "url": "https://github.com/vultr/vultr-cli",
+            "desc": "Needed by the cloud lab script for Vultr."
+          },
+          {
+            "name": "Podman",
+            "url": "https://podman.io/",
+            "desc": "Rootless containers. scripts/build-podman-lab.sh builds a container lab for the weeks that don't need a kernel of their own."
+          }
+        ]
+      },
+      {
+        "category": "U.S. government contracting",
+        "items": [
+          {
+            "name": "DoD 8140 — DoD Cyber Exchange",
+            "url": "https://public.cyber.mil/wid/dod8140/",
+            "desc": "The authoritative source for cyber workforce qualification requirements, work roles, and currently approved certifications. Check it before planning a cert path around a contract."
+          },
+          {
+            "name": "CompTIA Security+",
+            "url": "https://www.comptia.org/en-us/certifications/security/",
+            "desc": "The baseline security certification most federal contracts name. Pairs with RHCSA for privileged user access on Linux systems."
+          },
+          {
+            "name": "CompTIA CySA+",
+            "url": "https://www.comptia.org/en-us/certifications/cybersecurity-analyst/",
+            "desc": "Analyst-tier certification, the common next step above Security+ for security operations work roles."
+          },
+          {
+            "name": "Red Hat certification directory",
+            "url": "https://www.redhat.com/en/services/certification/verify",
+            "desc": "Where an employer verifies your RHCSA is current. Red Hat certifications expire — usually after three years."
+          }
+        ]
+      }
+    ]
+  },
+  "costs": {
+    "id": "costs",
+    "num": "10",
+    "eyebrow": "10 · Costs",
+    "title": "Estimated Costs",
+    "subtitle": "What this actually costs, with the optional parts marked",
+    "columns": [
+      "Item",
+      "Estimate"
+    ],
+    "rows": [
+      [
+        "<a href=\"https://developers.redhat.com/products/rhel/download\" target=\"_blank\" rel=\"noopener\">RHEL 10 Developer Edition</a> (16 systems) or <a href=\"https://rockylinux.org/\" target=\"_blank\" rel=\"noopener\">Rocky Linux 10</a>",
+        "$0"
+      ],
+      [
+        "This course and all 12 lab guides",
+        "$0"
+      ],
+      [
+        "<a href=\"https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam\" target=\"_blank\" rel=\"noopener\">RHCSA exam (EX200)</a>",
+        "~$500"
+      ],
+      [
+        "Hands-on mock exams — <a href=\"https://linuxcert.guru/\" target=\"_blank\" rel=\"noopener\">linuxcert.guru</a>",
+        "Low-cost; check the site for current pricing"
+      ],
+      [
+        "<a href=\"https://www.comptia.org/en-us/certifications/linux/\" target=\"_blank\" rel=\"noopener\">CompTIA Linux+ (XK0-006)</a>",
+        "~$369 · optional confidence builder"
+      ],
+      [
+        "<a href=\"https://tidd.ly/4pCL8rI\" target=\"_blank\" rel=\"noopener\">LFCS exam</a>",
+        "~$395 · optional confidence builder"
+      ],
+      [
+        "<a href=\"https://www.comptia.org/en-us/certifications/security/\" target=\"_blank\" rel=\"noopener\">CompTIA Security+</a> — if you need DoD 8140 privileged access",
+        "~$404 · often employer-funded"
+      ],
+      [
+        "<a href=\"https://www.comptia.org/en-us/certifications/cybersecurity-analyst/\" target=\"_blank\" rel=\"noopener\">CompTIA CySA+</a> — higher-tier work roles",
+        "~$425 · optional, usually employer-funded"
+      ],
+      [
+        "Lab machines — VMs on hardware you already own",
+        "$0"
+      ],
+      [
+        "Used laptop, only if your current machine can't spare the RAM",
+        "~$100–$300 one-time"
+      ],
+      [
+        "Exam retake, if it comes to that",
+        "Budget for one. Most people who fail, pass the second time."
+      ]
+    ],
+    "note": {
+      "kind": "danger",
+      "title": "The cheapest way to fail",
+      "text": "Booking the exam before you can finish a timed mock cleanly. The RHCSA is a single sitting with no partial credit — sitting it unprepared costs you $500 and a month of momentum. Pass a full mock with everything surviving a reboot <em>first</em>, then book."
+    }
+  },
+  "examday": {
+    "id": "exam-day",
+    "num": "11",
+    "eyebrow": "11 · Exam day",
+    "title": "Exam Day and Staying On Track",
+    "subtitle": "The habits that get you there, and the checklist for the morning itself",
+    "tips": [
+      {
+        "head": "Reboot after every lab.",
+        "text": "The objectives require configurations to persist without intervention. Make rebooting a reflex now and you will never lose marks to it."
+      },
+      {
+        "head": "Keep a break/fix log.",
+        "text": "Every error you hit and how you fixed it, in a text file on the machine. By Week 12 it becomes your personal study guide, and it is worth more than any book."
+      },
+      {
+        "head": "Live in the man pages.",
+        "text": "They are the only documentation you get. Practise finding things with man -k and section numbers until it is faster than searching the web would be."
+      },
+      {
+        "head": "Break things on purpose.",
+        "text": "Every lab guide ends with a break/fix drill for a reason. Recovering a broken system under time pressure is the actual skill being tested."
+      },
+      {
+        "head": "Verify, then move on.",
+        "text": "There is no partial credit. Finishing eight tasks correctly beats starting twelve. Check each one before you leave it."
+      },
+      {
+        "head": "Don't disable SELinux.",
+        "text": "It is tempting when something won't work, and it will cost you the security domain outright. Learn to read a denial instead — Week 10 covers exactly that."
+      },
+      {
+        "head": "Snapshot before every lab.",
+        "text": "It removes the fear of breaking things, which is the single biggest thing slowing beginners down."
+      },
+      {
+        "head": "Book the exam to create a deadline.",
+        "text": "Once you can pass a timed mock, book it within two weeks. Open-ended study drifts."
+      }
+    ],
+    "checklist": {
+      "title": "The morning of the exam",
+      "bullets": [
+        "Government-issued photo ID ready — check the name matches your Red Hat account exactly.",
+        "Test your machine, camera, and internet against the proctoring requirements the day <em>before</em>, not the morning of.",
+        "Clear your desk completely. No notes, no books, no second monitor, no phone.",
+        "Eat something. It is a long sitting and there is no meaningful break.",
+        "First five minutes: read every task before you start any of them. Do the ones you know cold first.",
+        "Last fifteen minutes: reboot and re-verify everything. This is not optional — it is where marks are won and lost.",
+        "If a task will not work, leave it and come back. Do not spend forty minutes on one item and lose three easy ones."
+      ]
+    },
+    "note": {
+      "kind": "success",
+      "title": "If you don't pass the first time",
+      "text": "It is a hard exam and plenty of good administrators fail it once. You get a score report by domain — that tells you precisely what to rebuild. Work those domains for two weeks, sit another mock, and book the retake. Most people who fail pass on the second attempt."
+    }
+  },
+  "story": {
+    "id": "story",
+    "num": "12",
+    "eyebrow": "12 · The why",
+    "title": "Why I Built This Guide",
+    "subtitle": "A note from Shea Bennett, founder of Shea's Tech",
+    "photo": "assets/img/Shea-Profile.png",
+    "photoFallback": "https://free.learnlinuxforwork.com/assets/img/Shea-Profile.png",
+    "photoAlt": "Shea Bennett, founder of Shea's Tech",
+    "linkedin": "https://www.linkedin.com/in/sheastech/",
+    "youtube": "https://www.youtube.com/@sheastech?sub_confirmation=1",
+    "body": [
+      "Shea Bennett started his career in Information Technology as a Helpdesk Analyst with no formal training or background in IT. He had no experience when he left the U.S. Navy, where he served as a Hospital Corpsman assigned to a Marine Corps battalion as a Fleet Marine Force (FMF) combat medic. His dream was to become a medical doctor, but the cost of medical education was simply too high — not something the Montgomery GI Bill alone could cover.",
+      "While working as a surgical technologist passing instruments at Naval Medical Center San Diego, he met engineers from a healthcare imaging company and asked one of them for help getting into IT. To his surprise, the man helped him land his first real IT job. Shea then spent the next few years training onsite at that company's headquarters in northern New Jersey, flying back and forth from San Diego. He struggled at first — he's a visual learner, and in 2007 the most common way to learn IT was in-person bootcamps or classroom training, neither of which he could afford.",
+      "Then he found video-based IT training, and never looked back. Shea is <strong>100% self-taught</strong>. He went on to earn a Bachelor's and a Master's degree from National University in San Diego, and trained extensively alongside various government agencies and U.S. government IT contractors. He believes anyone can learn IT on their own without paying for a bootcamp — but that mentorship and networking, in person or on live video, are critical, because IT is a team sport.",
+      "He later married a Somali-Kenyan woman who opened his eyes to a world where most people can't afford the technology and training taken for granted in the U.S. and other wealthy countries — something he saw firsthand living and traveling in Kenya and beyond.",
+      "This guide is also an homage to his own start. When Shea got out of the Navy in San Diego with no money for anything beyond a cup of instant ramen from 7-Eleven, he had to focus on what mattered and hold onto every dollar just to make it. He eventually moved back home to Philadelphia, and after a year of real struggle, found a job in the DC Metro area — and never looked back."
+    ],
+    "quote": [
+      "This was built for that fundi in Kenya, that hustler in Nigeria, the determined in Rwanda or Ethiopia. The hungry surviving in the UAE. The Indonesian or Filipino brother or sister — determined, but never given a chance or guidance.",
+      "It could be that street vendor in East London, West or North Philadelphia, the hoods of NJ, or in New York City. Or that front-desk hotel worker dreaming of changing their life.",
+      "Bismillah…"
+    ],
+    "closing": "If anything here is wrong, report it and we'll fix it."
+  },
+  "credits": {
+    "id": "credits",
+    "num": "13",
+    "eyebrow": "13 · Credits",
+    "title": "Credits and Trademarks",
+    "subtitle": "This course is independent. Every product named here belongs to somebody, and that somebody is not me.",
+    "body": [
+      "This is an independent, community-written study guide. It is <strong>not affiliated with, sponsored by, endorsed by, or certified by</strong> Red Hat, Inc. or any other organisation named on this site. Nothing here is official courseware, and passing this course guarantees nothing about the exam.",
+      "All course text, lab guides, and scripts are original work by Shea, released under the GNU AGPL v3.0 or later. The exam objectives themselves are published by Red Hat and are the authoritative statement of what EX200 covers — always check the source."
+    ],
+    "columns": [
+      "Product or mark",
+      "Belongs to",
+      "Used here for"
+    ],
+    "rows": [
+      [
+        "Red Hat, RHEL, Red Hat Enterprise Linux, RHCSA, RHCE, EX200",
+        "Red Hat, Inc.",
+        "The certification this course prepares you for, and the operating system it is based on. Red Hat publishes the exam objectives that this course maps to. <a href=\"https://www.redhat.com/\" target=\"_blank\" rel=\"noopener\">redhat.com</a>"
+      ],
+      [
+        "Rocky Linux",
+        "Rocky Enterprise Software Foundation",
+        "A free, community-maintained rebuild of RHEL, used here as the no-account practice option. <a href=\"https://rockylinux.org/\" target=\"_blank\" rel=\"noopener\">rockylinux.org</a>"
+      ],
+      [
+        "Ubuntu",
+        "Canonical Ltd.",
+        "Recommended as a host operating system for running the lab virtual machines. <a href=\"https://ubuntu.com/\" target=\"_blank\" rel=\"noopener\">ubuntu.com</a>"
+      ],
+      [
+        "VirtualBox",
+        "Oracle Corporation",
+        "The default hypervisor recommendation for the home lab. <a href=\"https://www.virtualbox.org/\" target=\"_blank\" rel=\"noopener\">virtualbox.org</a>"
+      ],
+      [
+        "VMware Workstation Pro, Fusion",
+        "Broadcom Inc.",
+        "An alternative hypervisor, free for personal use. <a href=\"https://www.vmware.com/\" target=\"_blank\" rel=\"noopener\">vmware.com</a>"
+      ],
+      [
+        "Proxmox VE",
+        "Proxmox Server Solutions GmbH",
+        "Bare-metal hypervisor option for a dedicated lab machine. <a href=\"https://www.proxmox.com/\" target=\"_blank\" rel=\"noopener\">proxmox.com</a>"
+      ],
+      [
+        "Podman",
+        "Red Hat, Inc. and the Podman community",
+        "Container engine used by the low-RAM lab script. <a href=\"https://podman.io/\" target=\"_blank\" rel=\"noopener\">podman.io</a>"
+      ],
+      [
+        "CompTIA, Security+, CySA+, Linux+",
+        "CompTIA, Inc.",
+        "Named as baseline and analyst certifications for DoD 8140 work roles, and as an optional confidence builder. <a href=\"https://www.comptia.org/\" target=\"_blank\" rel=\"noopener\">comptia.org</a>"
+      ],
+      [
+        "DoD 8140, DoD 8570.01-M",
+        "U.S. Department of Defense",
+        "Referenced when explaining cyber workforce qualification requirements for government contractors. <a href=\"https://public.cyber.mil/wid/dod8140/\" target=\"_blank\" rel=\"noopener\">public.cyber.mil</a>"
+      ],
+      [
+        "Linux Foundation, LFCS, CKA",
+        "The Linux Foundation",
+        "Named as an optional confidence-builder exam and training source. <a href=\"https://www.linuxfoundation.org/\" target=\"_blank\" rel=\"noopener\">linuxfoundation.org</a>"
+      ],
+      [
+        "LPI, Linux Essentials",
+        "Linux Professional Institute",
+        "Named as an optional vendor-neutral certification path. <a href=\"https://www.lpi.org/\" target=\"_blank\" rel=\"noopener\">lpi.org</a>"
+      ],
+      [
+        "killer.sh",
+        "killer.sh",
+        "Exam simulator referenced for Linux Foundation certification preparation. <a href=\"https://killer.sh/\" target=\"_blank\" rel=\"noopener\">killer.sh</a>"
+      ],
+      [
+        "Google Cloud, AWS, DigitalOcean, Vultr",
+        "Google LLC, Amazon.com Inc., DigitalOcean Holdings Inc., The Constant Company LLC",
+        "Cloud providers supported by the hosted lab script."
+      ],
+      [
+        "Linux",
+        "Linus Torvalds",
+        "The kernel all of this runs on, registered trademark in the US and other countries."
+      ]
+    ],
+    "note": {
+      "kind": "info",
+      "title": "Trademark notice",
+      "text": "All trademarks, service marks, and trade names are the property of their respective owners. Their use here is nominative — to identify the products this course teaches you to use — and does not imply any affiliation with or endorsement by the trademark holders. If you own one of these marks and want the wording changed, <a href=\"https://github.com/learnlinuxforwork/rhcsa/issues\" target=\"_blank\" rel=\"noopener\">open an issue</a> and it will be fixed."
+    }
+  },
+  "cloud": {
+    "id": "cloud-labs",
+    "num": "04",
+    "eyebrow": "04 · Cloud labs",
+    "title": "Self-Managed Cloud Hosted Labs",
+    "subtitle": "The same two machines on a provider you rent by the hour — for when the laptop can't spare the RAM",
+    "body": [
+      "If your machine cannot host two virtual machines, rent them instead. A small instance pair costs roughly $10–25 per month if you leave it running, and far less if you destroy it between study sessions — which you should.",
+      "<code>scripts/build-cloud-lab.sh</code> builds the identical <code>servera</code> / <code>serverb</code> pair on any of the four providers below, including the spare disk for the storage weeks, firewall rules that let the two hosts talk to each other, and SSH locked to your own address. Every provider block has a matching <code>--destroy</code>.",
+      "One genuine upside: rebuilding the lab from nothing every week is <em>itself</em> RHCSA practice. You will install, partition, and configure far more often than someone whose VMs just sit there."
+    ],
+    "columns": [
+      "Provider",
+      "Why you'd pick it",
+      "Command"
+    ],
+    "items": [
+      {
+        "name": "Google Cloud",
+        "sub": "console.cloud.google.com",
+        "url": "https://console.cloud.google.com/",
+        "desc": "Rocky Linux 10 images are published in the <code>rocky-linux-cloud</code> project, so no marketplace hunting. New accounts get free credit, which can cover most of a 12-week run. Needs the <a href=\"https://cloud.google.com/sdk/docs/install\" target=\"_blank\" rel=\"noopener\">gcloud SDK</a> and a <code>gcloud init</code>.",
+        "meta": "./build-cloud-lab.sh gcp"
+      },
+      {
+        "name": "DigitalOcean",
+        "sub": "cloud.digitalocean.com",
+        "url": "https://cloud.digitalocean.com/",
+        "desc": "The simplest pricing of the four and a Rocky 10 image already in the catalogue. Block volumes attach cleanly, which makes the LVM week straightforward. Needs <a href=\"https://docs.digitalocean.com/reference/doctl/how-to/install/\" target=\"_blank\" rel=\"noopener\">doctl</a>.",
+        "meta": "./build-cloud-lab.sh do"
+      },
+      {
+        "name": "Amazon Web Services",
+        "sub": "console.aws.amazon.com",
+        "url": "https://console.aws.amazon.com/",
+        "desc": "Rocky 10 AMIs are available, and the script finds the newest one for your region automatically. Note the free tier does <em>not</em> cover t3.medium — set a billing alarm on day one. Needs the <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html\" target=\"_blank\" rel=\"noopener\">AWS CLI</a>.",
+        "meta": "./build-cloud-lab.sh aws"
+      },
+      {
+        "name": "Vultr",
+        "sub": "my.vultr.com",
+        "url": "https://my.vultr.com/",
+        "desc": "Cheap hourly instances and inexpensive block storage for the LVM labs. Often the lowest total cost if you are disciplined about destroying the lab. Needs <a href=\"https://github.com/vultr/vultr-cli\" target=\"_blank\" rel=\"noopener\">vultr-cli</a> and an API key.",
+        "meta": "./build-cloud-lab.sh vultr"
+      }
+    ],
+    "after": {
+      "title": "Before you spend anything",
+      "bullets": [
+        "<strong>Set a billing alert on day one.</strong> Every provider offers one free, and every provider will happily bill you for an instance you forgot about.",
+        "Generate an SSH key first — the script requires one: <code>ssh-keygen -t ed25519 -C 'shea@rhcsa-lab'</code>",
+        "<strong>Destroy the lab when you finish for the week:</strong> <code>./scripts/build-cloud-lab.sh &lt;provider&gt; --destroy</code>. Stopping an instance still bills you for its disk.",
+        "A cloud lab cannot practise everything. Console-level work — interrupting the boot with <code>rd.break</code>, resetting a lost root password, editing the bootloader — needs a hypervisor where you control the virtual console. Do Week 5 locally even if everything else is hosted.",
+        "If you would rather not manage any of it, the browser-based hands-on labs at <a href=\"https://www.learnlinuxforwork.com\" target=\"_blank\" rel=\"noopener\">learnlinuxforwork.com</a> and <a href=\"https://www.redhat.com/en/interactive-labs\" target=\"_blank\" rel=\"noopener\">Red Hat's interactive labs</a> need no setup and no credit card."
+      ]
+    }
+  }
+}
