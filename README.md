@@ -2,18 +2,18 @@
 
 <img src="https://free.learnlinuxforwork.com/assets/img/ST-Brain-Logo.png" alt="Shea's Tech" width="120">
 
-# Free RHCSA Course
+# RHCSA Course
 
 ### Zero to Red Hat Certified System Administrator
 
 **Twelve weeks. Twelve hands-on lab guides. Every exam objective.**
 Built for people who can't drop $3,000 on a training course.
 
-[**rhcsa.learnlinuxforwork.com**](https://rhcsa.learnlinuxforwork.com) · [Download the eBook](Free_RHCSA_Course_eBook.pdf) · [Why I built this](https://rhcsa.learnlinuxforwork.com/#story)
+[**rhcsa.learnlinuxforwork.com**](https://rhcsa.learnlinuxforwork.com) · [Download the eBook](RHCSA_Course_eBook.pdf) · [Why I built this](https://rhcsa.learnlinuxforwork.com/#story)
 
 [![Exam](https://img.shields.io/badge/exam-EX200-cc0000?style=flat-square)](https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam)
 [![Platform](https://img.shields.io/badge/platform-RHEL%2010-cc0000?style=flat-square)](https://developers.redhat.com/products/rhel/download)
-[![License](https://img.shields.io/badge/license-AGPL--3.0--or--later-cc0000?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0--or--later-cc0000?style=flat-square)](https://learnlinuxforwork.com/license)
 [![Cost](https://img.shields.io/badge/cost-%240-cc0000?style=flat-square)](#what-it-costs)
 [![Tracking](https://img.shields.io/badge/tracking-none-cc0000?style=flat-square)](#features)
 [![PRs](https://img.shields.io/badge/PRs-welcome-cc0000?style=flat-square)](#contributing)
@@ -37,7 +37,7 @@ python3 -m http.server 8000       # read the course at localhost:8000
 ```
 
 Then open [Lab Guide 1](lab/week-01.html) and start typing. Prefer paper or offline?
-[Download the eBook](Free_RHCSA_Course_eBook.pdf) — 34 pages, every link clickable.
+[Download the eBook](RHCSA_Course_eBook.pdf) — 34 pages, every link clickable.
 
 ---
 
@@ -326,7 +326,7 @@ repository. They are built from
 — the authoritative statement of what the exam covers — and from hands-on practice.
 **No third-party book, course, or training material is reproduced here.**
 
-Licensed under the **GNU AGPL v3.0 or later**. See [LICENSE](LICENSE). Free forever.
+Licensed under the **[GNU AGPL v3.0 or later](https://learnlinuxforwork.com/license)**. See also [LICENSE](LICENSE). Free forever.
 
 ---
 

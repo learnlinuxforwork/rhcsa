@@ -3,7 +3,7 @@
 # build-cloud-lab.sh — stand the same two-machine RHCSA lab up in the cloud,
 #                      for when your laptop can't spare the RAM.
 #
-# Free RHCSA Course — rhcsa.learnlinuxforwork.com
+# RHCSA Course — rhcsa.learnlinuxforwork.com
 # Copyright (C) 2026 Shea's Tech. Licensed under the GNU AGPL v3.0 or later.
 #
 # SUPPORTED

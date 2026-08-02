@@ -3,7 +3,7 @@
 # build-podman-lab.sh — a two-"machine" RHCSA practice lab in Rocky Linux
 #                       containers, for when you have no spare RAM at all.
 #
-# Free RHCSA Course — rhcsa.learnlinuxforwork.com
+# RHCSA Course — rhcsa.learnlinuxforwork.com
 # Copyright (C) 2026 Shea's Tech. Licensed under the GNU AGPL v3.0 or later.
 #
 # HONEST LIMITATIONS — read this first

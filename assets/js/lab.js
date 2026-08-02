@@ -1,5 +1,5 @@
 /*
- * Free RHCSA Course — lab guide theme toggle
+ * RHCSA Course — lab guide theme toggle
  * Copyright (C) 2026 Shea's Tech. Licensed under the GNU AGPL v3.0 or later.
  */
 (function () {

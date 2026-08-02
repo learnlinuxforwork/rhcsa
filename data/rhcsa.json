@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Free RHCSA Course",
+    "title": "RHCSA Course",
     "subtitle": "Zero to Red Hat Certified System Administrator (EX200)",
     "tagline": "A 12-week, week-by-week course with a full lab guide behind every week. Free forever.",
     "exam": "EX200 · Red Hat Enterprise Linux 10",
@@ -1129,8 +1129,8 @@
     "download": {
       "title": "Download the eBook",
       "text": "The whole course as a single PDF you can read offline or print — same content, same structure, with every link clickable.",
-      "url": "Free_RHCSA_Course_eBook.pdf",
-      "label": "Free RHCSA Course eBook (PDF, 23 pages)"
+      "url": "RHCSA_Course_eBook.pdf",
+      "label": "RHCSA Course eBook (PDF, 23 pages)"
     }
   },
   "resources": {

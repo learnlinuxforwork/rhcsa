@@ -5,7 +5,7 @@ Generate the standalone lab guide pages under lab/ from LABS below.
 Run from the repo root:   python3 tools/build_labs.py
 The generated pages are committed; the published site has no build step.
 
-Free RHCSA Course - rhcsa.learnlinuxforwork.com
+RHCSA Course - rhcsa.learnlinuxforwork.com
 Copyright (C) 2026 Shea's Tech. Licensed under the GNU AGPL v3.0 or later.
 """
 import html
@@ -923,7 +923,7 @@ PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lab {n}: {title} — Free RHCSA Course</title>
+<title>Lab {n}: {title} — RHCSA Course</title>
 <meta name="description" content="{goal_attr}">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
@@ -963,8 +963,8 @@ PAGE = """<!DOCTYPE html>
   <a class="brand" href="../index.html">
     <span class="brand__mark">ST</span>
     <span class="brand__text">
-      <span class="brand__title">Free RHCSA Course</span>
-      <span class="brand__sub">Lab {n} of 12</span>
+      <span class="brand__title">RHCSA Course</span>
+      <span class="brand__sub">From Learn Linux For Work · Lab {n} of 12</span>
     </span>
   </a>
   <span class="header__spacer"></span>
@@ -1024,9 +1024,9 @@ PAGE = """<!DOCTYPE html>
 
 <footer class="footer">
   <div class="footer__inner">
-    <div><strong>Free RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    <div><strong>RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
     Written by Shea. Licensed under the
-    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <a href="https://learnlinuxforwork.com/license" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
     <div class="footer__links">
       <a href="../index.html">Course home</a>
       <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>

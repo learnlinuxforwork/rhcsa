@@ -7,7 +7,7 @@ gh auth status >/dev/null 2>&1 || { echo "Run 'gh auth login' first."; exit 1; }
 
 git init -b main
 git add -A
-git commit -m "Free RHCSA Course: initial release
+git commit -m "RHCSA Course: initial release
 
 12-week course for the Red Hat Certified System Administrator exam (EX200, RHEL 10).
 Ten sections, twelve standalone lab guides, home lab setup for VirtualBox / VMware

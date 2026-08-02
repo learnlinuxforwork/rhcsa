@@ -3,7 +3,7 @@
 # build-local-lab.sh — create the two-machine RHCSA lab on a Linux laptop
 #                      using Oracle VirtualBox or VMware Workstation Pro.
 #
-# Free RHCSA Course — rhcsa.learnlinuxforwork.com
+# RHCSA Course — rhcsa.learnlinuxforwork.com
 # Copyright (C) 2026 Shea's Tech. Licensed under the GNU AGPL v3.0 or later.
 #
 # WHAT IT DOES
