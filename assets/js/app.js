@@ -285,11 +285,14 @@
       '<button class="phase__head" type="button" aria-expanded="' + (open ? "true" : "false") + '">' +
         '<span class="phase__badge"><b>' + wk.n + "</b><span>week</span></span>" +
         '<span class="phase__meta"><span class="phase__title">' + esc(wk.title) + "</span>" +
-        '<span class="phase__sub">' + esc(wk.domain) + " · " + esc(wk.hours) + " hrs</span></span>" +
+        '<span class="phase__sub">' + esc(wk.domain) + "</span></span>" +
         '<span class="phase__right"><span class="phase__count" data-count>0/' + total + "</span>" +
         '<span class="phase__ring" data-ring>' + ring(0) + "</span>" +
         '<span class="phase__chev">' + ICON_CHEV + "</span></span></button>" +
       '<div class="phase__body"><div class="week">' +
+        '<div class="week__head"><span class="week__right">' +
+          '<a class="week__lab" href="lab/' + wk.id + '.html">' + ICON_EXT + "Lab guide</a>" +
+          '<span class="week__hrs">' + esc(wk.hours) + " hrs</span></span></div>" +
         '<p style="color:var(--text-2);font-size:13.8px;margin:0 0 12px">' + esc(wk.summary) + "</p>" +
         '<ul class="tasks">' + wk.tasks.map(function (t, i) {
           var id = wk.id + ":" + i;
@@ -300,7 +303,6 @@
         '<ul style="margin:0;padding-left:18px">' + wk.objectives.map(function (ob) {
           return '<li style="font-size:12.8px;color:var(--text-2);margin-bottom:3px">' + esc(ob) + "</li>";
         }).join("") + "</ul></div>" +
-        '<a class="btn btn--primary" href="lab/' + wk.id + '.html">Open the Week ' + wk.n + " lab guide</a>" +
       "</div></div></div>";
   }
 
