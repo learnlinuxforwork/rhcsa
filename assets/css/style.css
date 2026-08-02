@@ -170,7 +170,7 @@ li { margin-bottom: 5px; }
   color: var(--accent-contrast);
   font-weight: 800; font-size: 13px; letter-spacing: -0.02em;
 }
-.brand__mark--logo { background: #0b0d10; border: 1px solid var(--border); padding: 4px; }
+.brand__mark--logo { background: #000; border: 1px solid var(--border); padding: 4px; }
 .brand__mark--logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .brand__text { min-width: 0; }
 .brand__title {
