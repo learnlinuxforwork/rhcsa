@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 12: Mock Exam, Remediation, and Exam Day — RHCSA Course</title>
+<meta name="description" content="Find out whether you are actually ready, fix what the mock exposes, and walk into the real exam having already sat it once.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">RHCSA Course</span>
+      <span class="brand__sub">From Learn Linux For Work · Lab 12 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-12">&larr; Back to Week 12</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 12</div>
+    <h1>Mock Exam, Remediation, and Exam Day</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Find out whether you are actually ready, fix what the mock exposes, and walk into the real exam having already sat it once.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">6-8 hours across the week</span>
+      <span class="chip">Weeks 1-11 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Weeks 1-11 complete</li><li>Both lab machines rolled back to a clean snapshot</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. Set the conditions honestly</h2><p>A mock you cheat on tells you nothing. Reproduce the real constraints exactly.</p><div class="cmd"><div class="cmd__t">Before you start the timer</div><pre># 1. Roll both machines back to the 'clean' snapshot
+# 2. Close every browser tab except a clock
+# 3. No notes, no lab guides, no search engine
+# 4. Allowed: man, info, /usr/share/doc - nothing else
+# 5. Set a timer. Do not pause it for any reason.</pre></div></div><div class="step"><h2>2. A self-built mock</h2><p>Work these from a cold machine, in any order, in under three hours. They are written the way exam tasks are written - the outcome is specified, the method is not.</p><div class="cmd"><div class="cmd__t">Users, groups, and access</div><pre># 1. Create user 'auditor' with UID 3200 and a shell of /bin/bash.
+# 2. Create group 'audit' with GID 3300; make auditor a supplementary member.
+# 3. auditor's password must expire every 30 days with a 5-day warning.
+# 4. Members of 'audit' may run any command with sudo.</pre></div><div class="cmd"><div class="cmd__t">Storage</div><pre># 5. Create a 1 GiB partition on the spare disk, format it XFS,
+#    and mount it permanently at /data/reports using its UUID.
+# 6. Create a volume group 'appvg' and a 400 MiB logical volume 'applv'.
+# 7. Format applv ext4, mount it at /data/app, then grow it to 700 MiB
+#    without losing its contents.
+# 8. Add 512 MiB of swap that activates automatically at boot.</pre></div><div class="cmd"><div class="cmd__t">Services, networking, and security</div><pre># 9.  Install and enable httpd. Serve content from /srv/reports
+#     instead of the default location. It must work with SELinux enforcing.
+# 10. httpd must listen on port 8404 and be reachable through the firewall.
+# 11. Set a static IPv4 address that survives a reboot.
+# 12. Configure key-based SSH from servera to serverb for user shea.</pre></div><div class="cmd"><div class="cmd__t">Automation and recovery</div><pre># 13. Write /usr/local/bin/diskcheck.sh that takes a mount point as $1,
+#     prints its usage percentage, and exits 2 if usage exceeds 80 percent.
+# 14. Run that script every 15 minutes via a systemd timer.
+# 15. Make the journal persistent across reboots.
+# 16. Set the system to boot into multi-user.target by default.</pre></div><div class="cmd"><div class="cmd__t">Then, and only then</div><pre>sudo reboot
+# When it comes back, re-check every single task.
+# Score only what survived. Anything that needed a manual fix scores zero.</pre></div></div><div class="step"><h2>3. Score and remediate</h2><p>The score matters far less than the list it produces.</p><div class="cmd"><div class="cmd__t">Turn failures into a study plan</div><pre># For every task you missed or had to look up:
+#   - Which objective domain does it belong to?
+#   - Rebuild that lab from scratch, untimed, from the Week guide.
+#   - Then do it again from memory, timed.
+# Anything in the security or storage domains gets double attention -
+# they carry the most weight and the most partial-failure risk.</pre></div></div><div class="step"><h2>4. The second mock</h2><p>Later in the week, on a clean snapshot again.</p><div class="cmd"><div class="cmd__t">Use a source you have not seen</div><pre># Sit a timed, hands-on mock you did not write yourself, so you
+# cannot unconsciously remember the answers:
+#   https://linuxcert.guru/
+# Same rules: clean machines, timer running, man pages only, reboot at the end.</pre></div></div><div class="step"><h2>5. Book it</h2><div class="cmd"><div class="cmd__t">While the second mock is still fresh</div><pre># Book EX200 within two weeks of a clean mock pass:
+#   https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam
+# Check your ID matches your Red Hat account name exactly.
+# Test your machine against the proctoring requirements the day before.</pre></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>Every mock task re-checked AFTER a reboot</li><li>A written list of every objective you had to look up</li><li>A second timed mock passed cleanly</li><li>Exam booked, ID checked, environment tested</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>Skip the reboot at the end of the mock.</pre></div>
+    <p><strong>What you'll see:</strong> You score yourself 15/16 and feel ready. On the real exam you score far lower, because several configurations never persisted.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>Always reboot before scoring. Always.</pre></div>
+    <p><strong>Why it matters:</strong> This is the whole course in one sentence: the exam grades the state of the machine after a reboot, not the commands you typed. If you have internalised that by now, you are in good shape.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-11.html">&larr; Lab 11</a></span>
+    <span><a class="btn btn--primary" href="../index.html#exam-day">Exam day &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://learnlinuxforwork.com/license" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

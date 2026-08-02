@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 8: Partitions, Filesystems, and Swap — RHCSA Course</title>
+<meta name="description" content="Carve up the spare disk, format it three ways, mount it persistently by UUID, and add swap - all without destroying the system.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">RHCSA Course</span>
+      <span class="brand__sub">From Learn Linux For Work · Lab 8 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-08">&larr; Back to Week 8</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 8</div>
+    <h1>Partitions, Filesystems, and Swap</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Carve up the spare disk, format it three ways, mount it persistently by UUID, and add swap - all without destroying the system.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">3-4 hours</span>
+      <span class="chip">Week 7 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Week 7 complete</li><li>A second, empty disk attached to servera</li><li>A snapshot taken immediately before you start</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. Identify the right disk</h2><p>Get this wrong and you will reinstall. Confirm the device before every destructive command.</p><div class="cmd"><div class="cmd__t">Which disk is spare?</div><pre>lsblk
+sudo fdisk -l
+sudo blkid
+df -h</pre></div><div class="cmd"><div class="cmd__t">Set a variable so you cannot mistype it later</div><pre>DISK=/dev/sdb        # change this to match YOUR spare disk
+lsblk $DISK
+sudo blkid $DISK || echo 'no filesystem signature - good, it is empty'</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>If lsblk shows a mountpoint or existing data on your candidate disk, stop and pick a different one.</p></div></div><div class="step"><h2>2. Create GPT partitions</h2><div class="cmd"><div class="cmd__t">Write a GPT label and two partitions</div><pre>sudo parted -s $DISK mklabel gpt
+sudo parted -s $DISK mkpart primary 1MiB 2GiB
+sudo parted -s $DISK mkpart primary 2GiB 4GiB
+sudo parted -s $DISK print
+lsblk $DISK</pre></div><div class="cmd"><div class="cmd__t">Make sure the kernel noticed</div><pre>sudo partprobe $DISK
+lsblk $DISK</pre></div></div><div class="step"><h2>3. Create filesystems</h2><p>All three named types appear in the objectives.</p><div class="cmd"><div class="cmd__t">XFS and ext4</div><pre>sudo mkfs.xfs ${DISK}1
+sudo mkfs.ext4 ${DISK}2
+sudo blkid ${DISK}1 ${DISK}2</pre></div><div class="cmd"><div class="cmd__t">Label them, which makes fstab easier to read</div><pre>sudo xfs_admin -L labxfs ${DISK}1
+sudo e2label ${DISK}2 labext4
+sudo blkid ${DISK}1 ${DISK}2</pre></div></div><div class="step"><h2>4. Mount, then make it permanent</h2><p>Mounting by device name is fragile - device names can change between boots. Use UUID or label.</p><div class="cmd"><div class="cmd__t">Mount by hand first to prove it works</div><pre>sudo mkdir -p /mnt/xfsdata /mnt/extdata
+sudo mount ${DISK}1 /mnt/xfsdata
+sudo mount ${DISK}2 /mnt/extdata
+df -h | grep mnt
+sudo umount /mnt/xfsdata /mnt/extdata</pre></div><div class="cmd"><div class="cmd__t">Add persistent entries by UUID</div><pre>sudo cp /etc/fstab /root/fstab.backup
+UUID1=$(sudo blkid -s UUID -o value ${DISK}1)
+UUID2=$(sudo blkid -s UUID -o value ${DISK}2)
+echo "UUID=$UUID1  /mnt/xfsdata  xfs   defaults  0 0" | sudo tee -a /etc/fstab
+echo "UUID=$UUID2  /mnt/extdata  ext4  defaults  0 0" | sudo tee -a /etc/fstab
+cat /etc/fstab</pre></div><div class="cmd"><div class="cmd__t">Test WITHOUT rebooting - this is the safety net</div><pre>sudo mount -a
+df -h | grep mnt
+sudo systemctl daemon-reload</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>'mount -a' is the single most important habit in this lab. A typo in fstab can stop the system booting; mount -a catches it while you can still fix it.</p></div></div><div class="step"><h2>5. A VFAT filesystem</h2><p>Named in the objectives, and quick to do with a small third partition.</p><div class="cmd"><div class="cmd__t">Add and format it</div><pre>sudo parted -s $DISK mkpart primary fat32 4GiB 5GiB
+sudo partprobe $DISK
+sudo mkfs.vfat -n LABVFAT ${DISK}3
+sudo mkdir -p /mnt/vfatdata
+UUID3=$(sudo blkid -s UUID -o value ${DISK}3)
+echo "UUID=$UUID3  /mnt/vfatdata  vfat  defaults  0 0" | sudo tee -a /etc/fstab
+sudo mount -a
+df -h | grep vfat</pre></div></div><div class="step"><h2>6. Add swap non-destructively</h2><p>The objectives say 'non-destructively' - meaning without disturbing what is already there.</p><div class="cmd"><div class="cmd__t">A swap partition</div><pre>sudo parted -s $DISK mkpart primary linux-swap 5GiB 6GiB
+sudo partprobe $DISK
+sudo mkswap ${DISK}4
+sudo swapon ${DISK}4
+swapon --show
+free -h</pre></div><div class="cmd"><div class="cmd__t">Make it permanent</div><pre>UUID4=$(sudo blkid -s UUID -o value ${DISK}4)
+echo "UUID=$UUID4  none  swap  defaults  0 0" | sudo tee -a /etc/fstab
+sudo swapoff ${DISK}4 &amp;&amp; sudo swapon -a
+swapon --show</pre></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>sudo mount -a &amp;&amp; echo 'fstab is valid'</li><li>df -h | grep /mnt</li><li>swapon --show</li><li>reboot, then: df -h | grep /mnt &amp;&amp; swapon --show</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>echo 'UUID=00000000-dead-beef-0000-000000000000  /mnt/ghost  xfs  defaults  0 0' | sudo tee -a /etc/fstab</pre></div>
+    <p><strong>What you'll see:</strong> 'mount -a' fails. Had you rebooted instead, the system would have dropped to an emergency shell asking for the root password.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>sudo sed -i '/dead-beef/d' /etc/fstab &amp;&amp; sudo mount -a</pre></div>
+    <p><strong>Why it matters:</strong> A bad fstab entry can stop a machine booting entirely. Two rules follow: back up fstab before editing it, and run 'mount -a' after every change. If a real system does drop to emergency mode, log in as root, remount / read-write, fix fstab, and reboot.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-07.html">&larr; Lab 7</a></span>
+    <span><a class="btn btn--primary" href="week-09.html">Lab 9 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://learnlinuxforwork.com/license" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

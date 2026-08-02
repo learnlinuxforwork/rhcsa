@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 4: Processes, Tuning, and Scheduled Tasks — RHCSA Course</title>
+<meta name="description" content="Find and control running processes, adjust their priority, manage tuned profiles, and schedule work three different ways.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  ol.verify { font-family: var(--mono); font-size: 12.8px; }
+  ol.verify li { margin-bottom: 6px; color: var(--text-2); }
+  @media print { .lab-back, .lab-nav, .header { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark">ST</span>
+    <span class="brand__text">
+      <span class="brand__title">RHCSA Course</span>
+      <span class="brand__sub">From Learn Linux For Work · Lab 4 of 12</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#week-04">&larr; Back to Week 4</a>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Lab guide 4</div>
+    <h1>Processes, Tuning, and Scheduled Tasks</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Find and control running processes, adjust their priority, manage tuned profiles, and schedule work three different ways.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">2-3 hours</span>
+      <span class="chip">Week 3 complete</span>
+    </div>
+  </div>
+
+  <div class="callout"><div class="callout__title">Before you start</div>
+    <ul><li>Week 3 complete</li><li>Take a snapshot of both machines. You will break things on purpose.</li></ul>
+  </div>
+
+  <div class="step"><h2>1. See what is running</h2><p>Learn one process listing well rather than three badly.</p><div class="cmd"><div class="cmd__t">Snapshot and live views</div><pre>ps aux | head
+ps -ef --forest | head -20
+top -b -n 1 | head -15
+uptime</pre></div><div class="cmd"><div class="cmd__t">Sort by what actually matters</div><pre>ps aux --sort=-%cpu | head -6
+ps aux --sort=-%mem | head -6</pre></div></div><div class="step"><h2>2. Create load, then kill it</h2><p>Make a process you can safely identify and terminate.</p><div class="cmd"><div class="cmd__t">Start something noisy in the background</div><pre>sha256sum /dev/zero &amp;
+sleep 300 &amp;
+jobs
+ps -ef | grep -E 'sha256sum|sleep' | grep -v grep</pre></div><div class="cmd"><div class="cmd__t">Terminate it politely, then forcefully</div><pre>pkill sha256sum
+pgrep -a sleep
+kill %2 2&gt;/dev/null || pkill sleep
+ps -ef | grep -c sleep</pre></div><div class="cmd"><div class="cmd__t">Signals worth knowing</div><pre>kill -l | head -3
+# SIGTERM (15) asks a process to exit; SIGKILL (9) cannot be caught or ignored</pre></div></div><div class="step"><h2>3. Scheduling priority</h2><p>Lower nice values mean higher priority. Only root can lower a value below zero.</p><div class="cmd"><div class="cmd__t">Start a process at a specific niceness</div><pre>nice -n 10 sha256sum /dev/zero &amp;
+ps -o pid,ni,comm -C sha256sum</pre></div><div class="cmd"><div class="cmd__t">Change it while running</div><pre>sudo renice -n -5 -p $(pgrep -n sha256sum)
+ps -o pid,ni,comm -C sha256sum
+pkill sha256sum</pre></div></div><div class="step"><h2>4. Tuning profiles</h2><p>Named directly in the objectives, and quick marks if you know the three commands.</p><div class="cmd"><div class="cmd__t">List, check, and switch</div><pre>sudo dnf install -y tuned
+sudo systemctl enable --now tuned
+tuned-adm list
+tuned-adm active
+sudo tuned-adm profile throughput-performance
+tuned-adm active</pre></div><div class="cmd"><div class="cmd__t">Let tuned choose for the hardware</div><pre>sudo tuned-adm recommend
+sudo tuned-adm profile $(sudo tuned-adm recommend)
+tuned-adm active</pre></div></div><div class="step"><h2>5. One-off jobs with at</h2><div class="cmd"><div class="cmd__t">Schedule and inspect</div><pre>sudo dnf install -y at
+sudo systemctl enable --now atd
+echo 'date &gt;&gt; /tmp/at-test.log' | at now + 1 minute
+atq
+at -c $(atq | awk '{print $1}' | head -1) | tail -5</pre></div><div class="cmd"><div class="cmd__t">Wait, then confirm it ran</div><pre>sleep 70
+cat /tmp/at-test.log
+atq</pre></div></div><div class="step"><h2>6. Recurring jobs with cron</h2><p>Both a user crontab and a system-wide job, because the exam may ask for either.</p><div class="cmd"><div class="cmd__t">A user crontab</div><pre>crontab -l 2&gt;/dev/null
+(crontab -l 2&gt;/dev/null; echo '*/2 * * * * /usr/bin/date &gt;&gt; /home/shea/cron-test.log') | crontab -
+crontab -l</pre></div><div class="cmd"><div class="cmd__t">A system-wide job that runs as a specific user</div><pre>sudo tee /etc/cron.d/lab-report &gt;/dev/null &lt;&lt;'EOF'
+*/5 * * * * shea /usr/bin/uptime &gt;&gt; /tmp/uptime-report.log
+EOF
+sudo systemctl status crond --no-pager | head -5</pre></div></div><div class="step"><h2>7. systemd timers</h2><p>A timer needs two units: the service that does the work, and the timer that triggers it.</p><div class="cmd"><div class="cmd__t">The service unit</div><pre>sudo tee /etc/systemd/system/labreport.service &gt;/dev/null &lt;&lt;'EOF'
+[Unit]
+Description=Write a short system report
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '/usr/bin/date; /usr/bin/uptime' 
+EOF</pre></div><div class="cmd"><div class="cmd__t">The timer unit</div><pre>sudo tee /etc/systemd/system/labreport.timer &gt;/dev/null &lt;&lt;'EOF'
+[Unit]
+Description=Run labreport every 10 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+Unit=labreport.service
+
+[Install]
+WantedBy=timers.target
+EOF</pre></div><div class="cmd"><div class="cmd__t">Enable and inspect</div><pre>sudo systemctl daemon-reload
+sudo systemctl enable --now labreport.timer
+systemctl list-timers --all | grep labreport
+sudo systemctl start labreport.service
+sudo journalctl -u labreport.service --no-pager | tail -5</pre></div><div class="callout"><div class="callout__title">Worth knowing</div><p>Reach for a timer over cron when you need the job tied to boot, dependent on another unit, or logged in the journal. Cron is still fine for simple recurring work.</p></div></div>
+
+  <div class="step">
+    <h2>Verify your work</h2>
+    <p>Run these before you consider the lab finished.</p>
+    <ol class="verify"><li>tuned-adm active</li><li>crontab -l</li><li>systemctl list-timers --all | grep labreport</li><li>systemctl is-enabled labreport.timer   # expect: enabled</li></ol>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Break it, then fix it</div>
+    <p><strong>Break:</strong></p>
+    <div class="cmd"><pre>sudo sed -i 's/OnUnitActiveSec=10min/OnUnitActiveSec=nonsense/' /etc/systemd/system/labreport.timer &amp;&amp; sudo systemctl daemon-reload</pre></div>
+    <p><strong>What you'll see:</strong> The timer refuses to start and systemctl reports the unit as failed or not loaded.</p>
+    <p><strong>Fix:</strong></p>
+    <div class="cmd"><pre>sudo sed -i 's/OnUnitActiveSec=nonsense/OnUnitActiveSec=10min/' /etc/systemd/system/labreport.timer &amp;&amp; sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart labreport.timer</pre></div>
+    <p><strong>Why it matters:</strong> systemd will not guess what you meant. 'systemctl status' plus 'journalctl -xe' names the bad directive and the line number. Always run daemon-reload after editing a unit file - forgetting it is the single most common systemd mistake.</p>
+  </div>
+
+  <div class="callout callout--danger">
+    <div class="callout__title">Now reboot</div>
+    <p>Run <code>sudo reboot</code>, then re-run every command in the verify list above. Anything that
+    did not come back on its own would have scored zero on the exam. Fix it now, while you can still
+    see what you did.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="week-03.html">&larr; Lab 3</a></span>
+    <span><a class="btn btn--primary" href="week-05.html">Lab 5 &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://learnlinuxforwork.com/license" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>
