@@ -1129,8 +1129,8 @@
     "download": {
       "title": "Download the eBook",
       "text": "The whole course as a single PDF you can read offline or print — same content, same structure, with every link clickable.",
-      "url": "RHCSA_Course_eBook.pdf",
-      "label": "RHCSA Course eBook (PDF, 23 pages)"
+      "url": "https://learnlinuxforwork.com/ebooks",
+      "label": "Get the RHCSA Course eBook"
     }
   },
   "resources": {

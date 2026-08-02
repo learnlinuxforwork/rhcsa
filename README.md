@@ -9,7 +9,7 @@
 **Twelve weeks. Twelve hands-on lab guides. Every exam objective.**
 Built for people who can't drop $3,000 on a training course.
 
-[**rhcsa.learnlinuxforwork.com**](https://rhcsa.learnlinuxforwork.com) · [Download the eBook](RHCSA_Course_eBook.pdf) · [Why I built this](https://rhcsa.learnlinuxforwork.com/#story)
+[**rhcsa.learnlinuxforwork.com**](https://rhcsa.learnlinuxforwork.com) · [Download the eBook](https://learnlinuxforwork.com/ebooks) · [Why I built this](https://rhcsa.learnlinuxforwork.com/#story)
 
 [![Exam](https://img.shields.io/badge/exam-EX200-cc0000?style=flat-square)](https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam)
 [![Platform](https://img.shields.io/badge/platform-RHEL%2010-cc0000?style=flat-square)](https://developers.redhat.com/products/rhel/download)
@@ -37,7 +37,7 @@ python3 -m http.server 8000       # read the course at localhost:8000
 ```
 
 Then open [Lab Guide 1](lab/week-01.html) and start typing. Prefer paper or offline?
-[Download the eBook](RHCSA_Course_eBook.pdf) — 34 pages, every link clickable.
+[Download the eBook](https://learnlinuxforwork.com/ebooks) — every link clickable.
 
 ---
 

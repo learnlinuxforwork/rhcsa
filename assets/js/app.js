@@ -211,7 +211,7 @@
       }).join("") + "</div>" + callout(lb.note) +
       (lb.download ? '<div class="callout callout--success"><div class="callout__title">' +
         esc(lb.download.title) + "</div><p>" + esc(lb.download.text) +
-        '</p><p><a class="btn btn--primary" href="' + esc(lb.download.url) + '" download>' +
+        '</p><p><a class="btn btn--primary" href="' + esc(lb.download.url) + '" target="_blank" rel="noopener noreferrer">' +
         esc(lb.download.label) + "</a></p></div>" : "") + "</section>");
 
     /* 08 resources */
