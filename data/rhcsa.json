@@ -1811,28 +1811,32 @@
         "sub": "console.cloud.google.com",
         "url": "https://console.cloud.google.com/",
         "desc": "Rocky Linux 10 images are published in the <code>rocky-linux-cloud</code> project, so no marketplace hunting. New accounts get free credit, which can cover most of a 12-week run. Needs the <a href=\"https://cloud.google.com/sdk/docs/install\" target=\"_blank\" rel=\"noopener\">gcloud SDK</a> and a <code>gcloud init</code>.",
-        "meta": "./build-cloud-lab.sh gcp"
+        "meta": "./build-cloud-lab.sh gcp",
+        "scriptUrl": "cloud/gcp.html"
       },
       {
         "name": "DigitalOcean",
         "sub": "cloud.digitalocean.com",
         "url": "https://cloud.digitalocean.com/",
         "desc": "The simplest pricing of the four and a Rocky 10 image already in the catalogue. Block volumes attach cleanly, which makes the LVM week straightforward. Needs <a href=\"https://docs.digitalocean.com/reference/doctl/how-to/install/\" target=\"_blank\" rel=\"noopener\">doctl</a>.",
-        "meta": "./build-cloud-lab.sh do"
+        "meta": "./build-cloud-lab.sh do",
+        "scriptUrl": "cloud/do.html"
       },
       {
         "name": "Amazon Web Services",
         "sub": "console.aws.amazon.com",
         "url": "https://console.aws.amazon.com/",
         "desc": "Rocky 10 AMIs are available, and the script finds the newest one for your region automatically. Note the free tier does <em>not</em> cover t3.medium — set a billing alarm on day one. Needs the <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html\" target=\"_blank\" rel=\"noopener\">AWS CLI</a>.",
-        "meta": "./build-cloud-lab.sh aws"
+        "meta": "./build-cloud-lab.sh aws",
+        "scriptUrl": "cloud/aws.html"
       },
       {
         "name": "Vultr",
         "sub": "my.vultr.com",
         "url": "https://my.vultr.com/",
         "desc": "Cheap hourly instances and inexpensive block storage for the LVM labs. Often the lowest total cost if you are disciplined about destroying the lab. Needs <a href=\"https://github.com/vultr/vultr-cli\" target=\"_blank\" rel=\"noopener\">vultr-cli</a> and an API key.",
-        "meta": "./build-cloud-lab.sh vultr"
+        "meta": "./build-cloud-lab.sh vultr",
+        "scriptUrl": "cloud/vultr.html"
       }
     ],
     "after": {

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amazon Web Services Lab Script — RHCSA Course</title>
+<meta name="description" content="Instructions, prerequisites, and the full build-cloud-lab.sh script for standing up the RHCSA lab on Amazon Web Services.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .lab-wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 90px; }
+  .lab-back { font-size: 13px; color: var(--text-3); display: inline-block; margin-bottom: 18px; }
+  .lab-h { margin-bottom: 22px; }
+  .lab-h h1 { font-size: 27px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .lab-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .step { margin: 30px 0 0; }
+  .step h2 { font-size: 17px; margin-bottom: 6px; }
+  .step > p { color: var(--text-2); font-size: 14px; max-width: 72ch; }
+  .cmd { margin: 14px 0; border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; background: var(--bg-elev); box-shadow: var(--shadow); }
+  .cmd__t { display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600; color: var(--text-2);
+             padding: 9px 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border); }
+  .cmd__actions { margin-left: auto; display: flex; gap: 6px; flex: none; }
+  .cmd__actions .btn svg { width: 13px; height: 13px; }
+  .cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono);
+              font-size: 12.8px; line-height: 1.65; color: var(--text); white-space: pre; }
+  .cmd pre.cmd__pre--scroll { max-height: 460px; overflow-y: auto; }
+  .lab-nav { display: flex; justify-content: space-between; gap: 12px;
+              margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .mobile-notice { display: block; }
+  @media (min-width: 900px) { .mobile-notice { display: none; } }
+  @media print { .lab-back, .lab-nav, .header, .cmd__actions { display: none !important; } }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("rhcsa.theme.v1");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark brand__mark--logo"><img src="../assets/img/ST-Brain-Logo.png" alt="Shea's Tech" width="24" height="24"></span>
+    <span class="brand__text">
+      <span class="brand__title">RHCSA Course</span>
+      <span class="brand__sub">From Learn Linux For Work · Cloud lab: Amazon Web Services</span>
+    </span>
+  </a>
+  <span class="header__spacer"></span>
+  <button class="btn btn--icon" data-theme-toggle title="Toggle dark / light mode" aria-label="Toggle dark or light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="lab-wrap">
+  <a class="lab-back" href="../index.html#cloud-labs">&larr; Back to Self-Managed Cloud Hosted Labs</a>
+
+  <div class="callout callout--warn">
+    <div class="callout__title">Run this at your own risk</div>
+    <p>This script creates and deletes billable resources in your own Amazon Web Services account. It is provided <strong>as-is, with no warranty and no support</strong> — read it before you run it, and you are responsible for what it does and what it costs.</p>
+    <p>By downloading or running it you agree to Shea's Tech's <a href="https://learnlinuxforwork.com/terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> and the <a href="https://learnlinuxforwork.com/license/" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 license</a> it's released under.</p>
+  </div>
+
+  <div class="callout callout--success mobile-notice">
+    <div class="callout__title">This page is designed for larger screens</div>
+    <p>The script and commands below read a lot better on a tablet or desktop. Everything still works on a phone, but expect to scroll sideways through the code.</p>
+  </div>
+
+  <div class="lab-h">
+    <div class="section__eyebrow">Cloud lab script</div>
+    <h1>Amazon Web Services</h1>
+    <p style="color:var(--text-2);font-size:14.5px;max-width:74ch">Prerequisites, step-by-step instructions, and the full <code>build-cloud-lab.sh</code> script for standing up <code>servera</code> and <code>serverb</code> on Amazon Web Services.</p>
+    <div class="lab-meta">
+      <span class="chip chip--accent">AWS</span>
+      <span class="chip">Needs AWS CLI</span>
+    </div>
+    <p style="margin-top:16px"><a class="btn btn--primary" href="https://console.aws.amazon.com/" target="_blank" rel="noopener noreferrer">Log in to Amazon Web Services &rarr;</a></p>
+  </div>
+
+  <div class="callout">
+    <div class="callout__title">Before you start</div>
+    <ul>
+      <li>An AWS account with a payment method on file and a billing alarm set.</li>
+      <li>The <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" target="_blank" rel="noopener noreferrer">AWS CLI</a> installed locally, then <code>aws configure</code> with an access key that can manage EC2.</li>
+      <li>An SSH key at <code>~/.ssh/id_ed25519.pub</code> — generate one below if you don't have it.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h2>1. Install and authenticate AWS CLI</h2>
+    <p>Get the CLI from <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" target="_blank" rel="noopener noreferrer">https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html</a>, then authenticate:</p>
+    <div class="cmd">
+      <div class="cmd__t">Authenticate<span class="cmd__actions"><button class="btn btn--sm" data-copy="cmd-auth" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button></span></div>
+      <pre id="cmd-auth">aws configure</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>2. Generate an SSH key, if you don't have one</h2>
+    <p>The script refuses to run without <code>~/.ssh/id_ed25519.pub</code>.</p>
+    <div class="cmd">
+      <div class="cmd__t">Generate a key<span class="cmd__actions"><button class="btn btn--sm" data-copy="cmd-ssh" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button></span></div>
+      <pre id="cmd-ssh">ssh-keygen -t ed25519 -C 'shea@rhcsa-lab'</pre>
+    </div>
+  </div>
+
+
+  <div class="step">
+    <h2>3. What the script builds</h2>
+    <p>The script queries EC2 directly for the newest Rocky Linux 10 AMI in your region — you don't pick one by hand. Region defaults to <code>us-east-1</code> (override with <code>AWS_REGION</code>); instance type defaults to <code>t3.medium</code> for servera / <code>t3.small</code> for serverb (override with <code>AWS_TYPE</code>).</p>
+    <p>The script imports your SSH key as an EC2 key pair, creates a security group that allows SSH only from your current public IP (via ifconfig.me) plus full traffic between servera and serverb, and attaches a 10 GB extra volume to servera.</p>
+    <div class="callout callout--warn">
+      <div class="callout__title">Cost</div>
+      <p>The AWS free tier does <strong>not</strong> cover <code>t3.medium</code>. Set a billing alarm in Billing &amp; Cost Management before you launch anything.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>4. Build the lab</h2>
+    <p>Run it from the repo root, once your CLI is authenticated and your SSH key exists:</p>
+    <div class="cmd">
+      <div class="cmd__t">Build servera + serverb<span class="cmd__actions"><button class="btn btn--sm" data-copy="cmd-build" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button></span></div>
+      <pre id="cmd-build">./scripts/build-cloud-lab.sh aws</pre>
+    </div>
+    <p>Then connect:</p>
+    <div class="cmd">
+      <div class="cmd__t">Connect<span class="cmd__actions"><button class="btn btn--sm" data-copy="cmd-connect" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button></span></div>
+      <pre id="cmd-connect">ssh rocky@&lt;servera-public-ip&gt;
+ssh rocky@&lt;serverb-public-ip&gt;</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>5. Destroy it when you're done for the week</h2>
+    <p>Stopping an instance still bills you for its disk — actually delete it between study sessions.</p>
+    <div class="cmd">
+      <div class="cmd__t">Destroy<span class="cmd__actions"><button class="btn btn--sm" data-copy="cmd-destroy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button></span></div>
+      <pre id="cmd-destroy">./scripts/build-cloud-lab.sh aws --destroy</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>What this does — the <code>aws_ec2()</code> function</h2>
+    <p>This is the exact function <code>build-cloud-lab.sh</code> runs for <code>aws</code>, pulled straight from the script below so you can read it before you trust it.</p>
+    <div class="cmd">
+      <div class="cmd__t">aws_ec2() — from build-cloud-lab.sh<span class="cmd__actions">
+        <button class="btn btn--sm" data-copy="snippet-aws" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button>
+      </span></div>
+      <pre id="snippet-aws" class="cmd__pre--scroll">aws_ec2() {
+  command -v aws &gt;/dev/null || die &quot;AWS CLI not installed.
+Install: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+Then:  aws configure&quot;
+
+  local REGION=&quot;${AWS_REGION:-us-east-1}&quot;
+  local TYPE=&quot;${AWS_TYPE:-t3.medium}&quot;
+
+  if [ &quot;$DESTROY&quot; = &quot;1&quot; ]; then
+    local IDS
+    IDS=$(aws ec2 describe-instances --region &quot;$REGION&quot; \
+      --filters &quot;Name=tag:Project,Values=$LAB_TAG&quot; &quot;Name=instance-state-name,Values=running,stopped&quot; \
+      --query &#x27;Reservations[].Instances[].InstanceId&#x27; --output text)
+    [ -n &quot;$IDS&quot; ] &amp;&amp; aws ec2 terminate-instances --region &quot;$REGION&quot; --instance-ids $IDS &amp;&amp; ok &quot;instances terminated&quot;
+    return
+  fi
+
+  c &quot;Finding the latest Rocky Linux 10 AMI&quot;
+  local AMI
+  AMI=$(aws ec2 describe-images --region &quot;$REGION&quot; --owners 792107900819 \
+    --filters &quot;Name=name,Values=Rocky-10-EC2-Base*x86_64*&quot; &quot;Name=state,Values=available&quot; \
+    --query &#x27;sort_by(Images,&amp;CreationDate)[-1].ImageId&#x27; --output text)
+  [ &quot;$AMI&quot; != &quot;None&quot; ] &amp;&amp; [ -n &quot;$AMI&quot; ] || die &quot;Could not find a Rocky 10 AMI in $REGION.
+Browse manually: https://console.aws.amazon.com/ec2/home#Images&quot;
+  ok &quot;AMI: $AMI&quot;
+
+  aws ec2 import-key-pair --region &quot;$REGION&quot; --key-name rhcsa-lab \
+    --public-key-material &quot;fileb://$SSH_KEY&quot; 2&gt;/dev/null || ok &quot;key pair already imported&quot;
+
+  aws ec2 create-security-group --region &quot;$REGION&quot; --group-name &quot;$LAB_TAG&quot; \
+    --description &quot;RHCSA lab&quot; 2&gt;/dev/null
+  local SG
+  SG=$(aws ec2 describe-security-groups --region &quot;$REGION&quot; --group-names &quot;$LAB_TAG&quot; \
+    --query &#x27;SecurityGroups[0].GroupId&#x27; --output text)
+  aws ec2 authorize-security-group-ingress --region &quot;$REGION&quot; --group-id &quot;$SG&quot; \
+    --protocol tcp --port 22 --cidr &quot;$(curl -s ifconfig.me)/32&quot; 2&gt;/dev/null
+  aws ec2 authorize-security-group-ingress --region &quot;$REGION&quot; --group-id &quot;$SG&quot; \
+    --protocol -1 --source-group &quot;$SG&quot; 2&gt;/dev/null
+  ok &quot;security group $SG — SSH from your IP only, plus full traffic between lab hosts&quot;
+
+  c &quot;Launching $VM_A with a 10 GB spare volume&quot;
+  aws ec2 run-instances --region &quot;$REGION&quot; --image-id &quot;$AMI&quot; --instance-type &quot;$TYPE&quot; \
+    --key-name rhcsa-lab --security-group-ids &quot;$SG&quot; --count 1 \
+    --block-device-mappings &#x27;[{&quot;DeviceName&quot;:&quot;/dev/sda1&quot;,&quot;Ebs&quot;:{&quot;VolumeSize&quot;:20}},{&quot;DeviceName&quot;:&quot;/dev/sdb&quot;,&quot;Ebs&quot;:{&quot;VolumeSize&quot;:10}}]&#x27; \
+    --tag-specifications &quot;ResourceType=instance,Tags=[{Key=Name,Value=$VM_A},{Key=Project,Value=$LAB_TAG}]&quot; \
+    --query &#x27;Instances[0].InstanceId&#x27; --output text
+
+  c &quot;Launching $VM_B&quot;
+  aws ec2 run-instances --region &quot;$REGION&quot; --image-id &quot;$AMI&quot; --instance-type t3.small \
+    --key-name rhcsa-lab --security-group-ids &quot;$SG&quot; --count 1 \
+    --tag-specifications &quot;ResourceType=instance,Tags=[{Key=Name,Value=$VM_B},{Key=Project,Value=$LAB_TAG}]&quot; \
+    --query &#x27;Instances[0].InstanceId&#x27; --output text
+
+  cat &lt;&lt;EOF
+
+List:      aws ec2 describe-instances --region $REGION \\
+             --filters &quot;Name=tag:Project,Values=$LAB_TAG&quot; \\
+             --query &#x27;Reservations[].Instances[].[Tags[?Key==\`Name\`].Value|[0],PublicIpAddress,State.Name]&#x27; --output table
+Connect:   ssh rocky@&lt;public-ip&gt;
+Console:   https://console.aws.amazon.com/ec2/
+
+STOP (cheaper than running, still pays for storage):
+           aws ec2 stop-instances --region $REGION --instance-ids &lt;ids&gt;
+DESTROY:   $0 aws --destroy
+EOF
+}</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>The full script</h2>
+    <p>All four providers live in one file. Copy it or download it — either way, read it before you run it.</p>
+    <div class="cmd">
+      <div class="cmd__t">build-cloud-lab.sh<span class="cmd__actions">
+        <button class="btn btn--sm" data-copy="full-script" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span></button>
+        <button class="btn btn--sm" data-download="full-script" data-filename="build-cloud-lab.sh" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+      </span></div>
+      <pre id="full-script" class="cmd__pre--scroll">#!/usr/bin/env bash
+#
+# build-cloud-lab.sh — stand the same two-machine RHCSA lab up in the cloud,
+#                      for when your laptop can&#x27;t spare the RAM.
+#
+# RHCSA Course — rhcsa.learnlinuxforwork.com
+# Copyright (C) 2026 Shea&#x27;s Tech. Licensed under the GNU AGPL v3.0 or later.
+#
+# SUPPORTED
+#   gcp     Google Cloud Platform   https://console.cloud.google.com/
+#   do      DigitalOcean            https://cloud.digitalocean.com/
+#   aws     Amazon Web Services     https://console.aws.amazon.com/
+#   vultr   Vultr                   https://my.vultr.com/
+#
+# USAGE
+#   ./build-cloud-lab.sh gcp
+#   ./build-cloud-lab.sh do
+#   ./build-cloud-lab.sh aws
+#   ./build-cloud-lab.sh vultr
+#   ./build-cloud-lab.sh &lt;provider&gt; --destroy
+#
+# COST WARNING
+#   These are billable. Two small instances run roughly $10-25/month if you
+#   leave them on. DESTROY THEM when you are not labbing:
+#       ./build-cloud-lab.sh &lt;provider&gt; --destroy
+#   Set a billing alert on day one. Every provider offers one, free.
+#
+set -uo pipefail
+
+VM_A=&quot;servera&quot;; VM_B=&quot;serverb&quot;
+LAB_TAG=&quot;rhcsa-lab&quot;
+SSH_KEY=&quot;${HOME}/.ssh/id_ed25519.pub&quot;
+
+c()  { printf &#x27;\033[1;31m%s\033[0m\n&#x27; &quot;$*&quot;; }
+ok() { printf &#x27;  \033[0;32mok\033[0m  %s\n&#x27; &quot;$*&quot;; }
+die(){ printf &#x27;\n\033[1;31mSTOPPED:\033[0m %s\n&#x27; &quot;$*&quot;; exit 1; }
+
+PROVIDER=&quot;${1:-}&quot;; shift || true
+DESTROY=0
+[ &quot;${1:-}&quot; = &quot;--destroy&quot; ] &amp;&amp; DESTROY=1
+
+[ -f &quot;$SSH_KEY&quot; ] || die &quot;No SSH public key at $SSH_KEY.
+Create one first:  ssh-keygen -t ed25519 -C &#x27;shea@rhcsa-lab&#x27;&quot;
+
+# ==================================================================== GCP ===
+gcp() {
+  command -v gcloud &gt;/dev/null || die &quot;gcloud not installed.
+Install the SDK: https://cloud.google.com/sdk/docs/install
+Then:  gcloud init &amp;&amp; gcloud auth login&quot;
+
+  local ZONE=&quot;${GCP_ZONE:-us-east1-b}&quot;
+  local TYPE=&quot;${GCP_TYPE:-e2-medium}&quot;
+  # Rocky Linux 10 is published in the rocky-linux-cloud project.
+  local IMAGE_FAMILY=&quot;rocky-linux-10&quot;
+  local IMAGE_PROJECT=&quot;rocky-linux-cloud&quot;
+
+  if [ &quot;$DESTROY&quot; = &quot;1&quot; ]; then
+    gcloud compute instances delete &quot;$VM_A&quot; &quot;$VM_B&quot; --zone &quot;$ZONE&quot; --quiet &amp;&amp; ok &quot;instances deleted&quot;
+    gcloud compute firewall-rules delete &quot;${LAB_TAG}-internal&quot; --quiet 2&gt;/dev/null
+    return
+  fi
+
+  c &quot;Creating the lab network rules&quot;
+  gcloud compute firewall-rules create &quot;${LAB_TAG}-internal&quot; \
+    --allow tcp,udp,icmp --source-tags &quot;$LAB_TAG&quot; --target-tags &quot;$LAB_TAG&quot; \
+    --description &quot;RHCSA lab: allow servera &lt;-&gt; serverb&quot; 2&gt;/dev/null || ok &quot;firewall rule already exists&quot;
+
+  c &quot;Creating $VM_A (with the spare disk for the storage labs)&quot;
+  gcloud compute instances create &quot;$VM_A&quot; \
+    --zone &quot;$ZONE&quot; --machine-type &quot;$TYPE&quot; \
+    --image-family &quot;$IMAGE_FAMILY&quot; --image-project &quot;$IMAGE_PROJECT&quot; \
+    --boot-disk-size 20GB --boot-disk-type pd-balanced \
+    --create-disk=name=${VM_A}-extra,size=10GB,type=pd-balanced,auto-delete=yes \
+    --tags &quot;$LAB_TAG&quot; \
+    --metadata ssh-keys=&quot;shea:$(cat &quot;$SSH_KEY&quot;)&quot;
+
+  c &quot;Creating $VM_B&quot;
+  gcloud compute instances create &quot;$VM_B&quot; \
+    --zone &quot;$ZONE&quot; --machine-type e2-small \
+    --image-family &quot;$IMAGE_FAMILY&quot; --image-project &quot;$IMAGE_PROJECT&quot; \
+    --boot-disk-size 20GB --tags &quot;$LAB_TAG&quot; \
+    --metadata ssh-keys=&quot;shea:$(cat &quot;$SSH_KEY&quot;)&quot;
+
+  gcloud compute instances list --filter=&quot;name~&#x27;server&#x27;&quot;
+  cat &lt;&lt;EOF
+
+Connect:   gcloud compute ssh shea@$VM_A --zone $ZONE
+           gcloud compute ssh shea@$VM_B --zone $ZONE
+
+Console:   https://console.cloud.google.com/compute/instances
+
+STOP THEM when you finish for the day (you still pay for disks):
+           gcloud compute instances stop $VM_A $VM_B --zone $ZONE
+DESTROY:   $0 gcp --destroy
+EOF
+}
+
+# =========================================================== DIGITALOCEAN ===
+digitalocean() {
+  command -v doctl &gt;/dev/null || die &quot;doctl not installed.
+Install: https://docs.digitalocean.com/reference/doctl/how-to/install/
+Then:  doctl auth init&quot;
+
+  local REGION=&quot;${DO_REGION:-nyc3}&quot;
+  local SIZE=&quot;${DO_SIZE:-s-2vcpu-4gb}&quot;
+  local IMAGE=&quot;rockylinux-10-x64&quot;
+
+  if [ &quot;$DESTROY&quot; = &quot;1&quot; ]; then
+    doctl compute droplet delete &quot;$VM_A&quot; &quot;$VM_B&quot; --force &amp;&amp; ok &quot;droplets deleted&quot;
+    return
+  fi
+
+  local KEYID
+  KEYID=$(doctl compute ssh-key list --format ID --no-header | head -1)
+  [ -n &quot;$KEYID&quot; ] || die &quot;No SSH key registered with DigitalOcean.
+Add it:  doctl compute ssh-key import rhcsa --public-key-file $SSH_KEY&quot;
+
+  c &quot;Creating $VM_A&quot;
+  doctl compute droplet create &quot;$VM_A&quot; --region &quot;$REGION&quot; --size &quot;$SIZE&quot; \
+    --image &quot;$IMAGE&quot; --ssh-keys &quot;$KEYID&quot; --tag-name &quot;$LAB_TAG&quot; --wait
+
+  c &quot;Creating $VM_B&quot;
+  doctl compute droplet create &quot;$VM_B&quot; --region &quot;$REGION&quot; --size s-1vcpu-2gb \
+    --image &quot;$IMAGE&quot; --ssh-keys &quot;$KEYID&quot; --tag-name &quot;$LAB_TAG&quot; --wait
+
+  c &quot;Adding a 10 GB volume to $VM_A for the storage labs&quot;
+  doctl compute volume create &quot;${VM_A}-extra&quot; --region &quot;$REGION&quot; --size 10GiB --fs-type &quot;&quot; 2&gt;/dev/null
+  local VOLID DROPID
+  VOLID=$(doctl compute volume list --format ID,Name --no-header | awk &#x27;/&#x27;&quot;${VM_A}&quot;&#x27;-extra/{print $1}&#x27;)
+  DROPID=$(doctl compute droplet list --format ID,Name --no-header | awk &#x27;/&#x27;&quot;$VM_A&quot;&#x27;/{print $1}&#x27;)
+  [ -n &quot;$VOLID&quot; ] &amp;&amp; doctl compute volume-action attach &quot;$VOLID&quot; &quot;$DROPID&quot; --wait &amp;&amp; ok &quot;volume attached&quot;
+
+  doctl compute droplet list --format Name,PublicIPv4,PrivateIPv4,Status
+  cat &lt;&lt;EOF
+
+Connect:   ssh root@&lt;public-ip&gt;
+Console:   https://cloud.digitalocean.com/droplets
+
+DESTROY:   $0 do --destroy
+EOF
+}
+
+# ==================================================================== AWS ===
+aws_ec2() {
+  command -v aws &gt;/dev/null || die &quot;AWS CLI not installed.
+Install: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+Then:  aws configure&quot;
+
+  local REGION=&quot;${AWS_REGION:-us-east-1}&quot;
+  local TYPE=&quot;${AWS_TYPE:-t3.medium}&quot;
+
+  if [ &quot;$DESTROY&quot; = &quot;1&quot; ]; then
+    local IDS
+    IDS=$(aws ec2 describe-instances --region &quot;$REGION&quot; \
+      --filters &quot;Name=tag:Project,Values=$LAB_TAG&quot; &quot;Name=instance-state-name,Values=running,stopped&quot; \
+      --query &#x27;Reservations[].Instances[].InstanceId&#x27; --output text)
+    [ -n &quot;$IDS&quot; ] &amp;&amp; aws ec2 terminate-instances --region &quot;$REGION&quot; --instance-ids $IDS &amp;&amp; ok &quot;instances terminated&quot;
+    return
+  fi
+
+  c &quot;Finding the latest Rocky Linux 10 AMI&quot;
+  local AMI
+  AMI=$(aws ec2 describe-images --region &quot;$REGION&quot; --owners 792107900819 \
+    --filters &quot;Name=name,Values=Rocky-10-EC2-Base*x86_64*&quot; &quot;Name=state,Values=available&quot; \
+    --query &#x27;sort_by(Images,&amp;CreationDate)[-1].ImageId&#x27; --output text)
+  [ &quot;$AMI&quot; != &quot;None&quot; ] &amp;&amp; [ -n &quot;$AMI&quot; ] || die &quot;Could not find a Rocky 10 AMI in $REGION.
+Browse manually: https://console.aws.amazon.com/ec2/home#Images&quot;
+  ok &quot;AMI: $AMI&quot;
+
+  aws ec2 import-key-pair --region &quot;$REGION&quot; --key-name rhcsa-lab \
+    --public-key-material &quot;fileb://$SSH_KEY&quot; 2&gt;/dev/null || ok &quot;key pair already imported&quot;
+
+  aws ec2 create-security-group --region &quot;$REGION&quot; --group-name &quot;$LAB_TAG&quot; \
+    --description &quot;RHCSA lab&quot; 2&gt;/dev/null
+  local SG
+  SG=$(aws ec2 describe-security-groups --region &quot;$REGION&quot; --group-names &quot;$LAB_TAG&quot; \
+    --query &#x27;SecurityGroups[0].GroupId&#x27; --output text)
+  aws ec2 authorize-security-group-ingress --region &quot;$REGION&quot; --group-id &quot;$SG&quot; \
+    --protocol tcp --port 22 --cidr &quot;$(curl -s ifconfig.me)/32&quot; 2&gt;/dev/null
+  aws ec2 authorize-security-group-ingress --region &quot;$REGION&quot; --group-id &quot;$SG&quot; \
+    --protocol -1 --source-group &quot;$SG&quot; 2&gt;/dev/null
+  ok &quot;security group $SG — SSH from your IP only, plus full traffic between lab hosts&quot;
+
+  c &quot;Launching $VM_A with a 10 GB spare volume&quot;
+  aws ec2 run-instances --region &quot;$REGION&quot; --image-id &quot;$AMI&quot; --instance-type &quot;$TYPE&quot; \
+    --key-name rhcsa-lab --security-group-ids &quot;$SG&quot; --count 1 \
+    --block-device-mappings &#x27;[{&quot;DeviceName&quot;:&quot;/dev/sda1&quot;,&quot;Ebs&quot;:{&quot;VolumeSize&quot;:20}},{&quot;DeviceName&quot;:&quot;/dev/sdb&quot;,&quot;Ebs&quot;:{&quot;VolumeSize&quot;:10}}]&#x27; \
+    --tag-specifications &quot;ResourceType=instance,Tags=[{Key=Name,Value=$VM_A},{Key=Project,Value=$LAB_TAG}]&quot; \
+    --query &#x27;Instances[0].InstanceId&#x27; --output text
+
+  c &quot;Launching $VM_B&quot;
+  aws ec2 run-instances --region &quot;$REGION&quot; --image-id &quot;$AMI&quot; --instance-type t3.small \
+    --key-name rhcsa-lab --security-group-ids &quot;$SG&quot; --count 1 \
+    --tag-specifications &quot;ResourceType=instance,Tags=[{Key=Name,Value=$VM_B},{Key=Project,Value=$LAB_TAG}]&quot; \
+    --query &#x27;Instances[0].InstanceId&#x27; --output text
+
+  cat &lt;&lt;EOF
+
+List:      aws ec2 describe-instances --region $REGION \\
+             --filters &quot;Name=tag:Project,Values=$LAB_TAG&quot; \\
+             --query &#x27;Reservations[].Instances[].[Tags[?Key==\`Name\`].Value|[0],PublicIpAddress,State.Name]&#x27; --output table
+Connect:   ssh rocky@&lt;public-ip&gt;
+Console:   https://console.aws.amazon.com/ec2/
+
+STOP (cheaper than running, still pays for storage):
+           aws ec2 stop-instances --region $REGION --instance-ids &lt;ids&gt;
+DESTROY:   $0 aws --destroy
+EOF
+}
+
+# ================================================================== VULTR ===
+vultr() {
+  command -v vultr-cli &gt;/dev/null || die &quot;vultr-cli not installed.
+Install: https://github.com/vultr/vultr-cli#installation
+Then export your API key:  export VULTR_API_KEY=...
+Get one at: https://my.vultr.com/settings/#settingsapi&quot;
+
+  local REGION=&quot;${VULTR_REGION:-ewr}&quot;
+  local PLAN=&quot;${VULTR_PLAN:-vc2-2c-4gb}&quot;
+
+  if [ &quot;$DESTROY&quot; = &quot;1&quot; ]; then
+    for n in &quot;$VM_A&quot; &quot;$VM_B&quot;; do
+      local ID; ID=$(vultr-cli instance list | awk -v n=&quot;$n&quot; &#x27;$0 ~ n {print $1}&#x27;)
+      [ -n &quot;$ID&quot; ] &amp;&amp; vultr-cli instance delete &quot;$ID&quot; &amp;&amp; ok &quot;$n deleted&quot;
+    done
+    return
+  fi
+
+  c &quot;Finding the Rocky Linux 10 OS id&quot;
+  vultr-cli os list | grep -i &quot;rocky&quot; || true
+  local OSID=&quot;${VULTR_OS_ID:-}&quot;
+  [ -n &quot;$OSID&quot; ] || die &quot;Set the OS id from the list above, then re-run:
+  export VULTR_OS_ID=&lt;id&gt; &amp;&amp; $0 vultr&quot;
+
+  local KEYID; KEYID=$(vultr-cli ssh-key list | awk &#x27;NR==2{print $1}&#x27;)
+  [ -n &quot;$KEYID&quot; ] || die &quot;No SSH key on Vultr. Add it:
+  vultr-cli ssh-key create --name rhcsa --key \&quot;\$(cat $SSH_KEY)\&quot;&quot;
+
+  c &quot;Creating $VM_A&quot;
+  vultr-cli instance create --region &quot;$REGION&quot; --plan &quot;$PLAN&quot; --os &quot;$OSID&quot; \
+    --label &quot;$VM_A&quot; --host &quot;$VM_A&quot; --ssh-keys &quot;$KEYID&quot; --tags &quot;$LAB_TAG&quot;
+  c &quot;Creating $VM_B&quot;
+  vultr-cli instance create --region &quot;$REGION&quot; --plan vc2-1c-2gb --os &quot;$OSID&quot; \
+    --label &quot;$VM_B&quot; --host &quot;$VM_B&quot; --ssh-keys &quot;$KEYID&quot; --tags &quot;$LAB_TAG&quot;
+
+  vultr-cli instance list
+  cat &lt;&lt;EOF
+
+Add a 10 GB block volume to $VM_A for the storage labs:
+  vultr-cli block-storage create --region $REGION --size 10 --label ${VM_A}-extra
+  vultr-cli block-storage attach &lt;block-id&gt; --instance &lt;instance-id&gt;
+
+Connect:   ssh root@&lt;ip&gt;
+Console:   https://my.vultr.com/
+DESTROY:   $0 vultr --destroy
+EOF
+}
+
+case &quot;$PROVIDER&quot; in
+  gcp)   gcp ;;
+  do|digitalocean) digitalocean ;;
+  aws)   aws_ec2 ;;
+  vultr) vultr ;;
+  *) sed -n &#x27;2,30p&#x27; &quot;$0&quot;; exit 1 ;;
+esac
+
+cat &lt;&lt;&#x27;EOF&#x27;
+
+REMEMBER: cloud instances bill by the hour. Destroy them when you are done for
+the week, and rebuild with this script when you come back. Rebuilding from
+scratch is itself good RHCSA practice.
+EOF</pre>
+    </div>
+  </div>
+
+  <div class="callout callout--warn" style="margin-top:34px">
+    <div class="callout__title">One more time: no warranty, no support</div>
+    <p>Shea's Tech provides this script for free, as-is, with no warranty of any kind and no support obligation. You are solely responsible for the resources it creates, the commands it runs, and any charges your cloud provider bills you. Review the <a href="https://learnlinuxforwork.com/terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> and the <a href="https://learnlinuxforwork.com/license/" target="_blank" rel="noopener noreferrer">AGPL v3.0 license</a> before you run anything.</p>
+  </div>
+
+  <div class="lab-nav">
+    <span><a class="btn" href="../index.html#cloud-labs">&larr; Back to Cloud Labs</a></span>
+    <span><a class="btn btn--primary" href="https://console.aws.amazon.com/" target="_blank" rel="noopener noreferrer">Log in to Amazon Web Services &rarr;</a></span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div><strong>RHCSA Course</strong> — rhcsa.learnlinuxforwork.com<br>
+    Written by Shea. Licensed under the
+    <a href="https://learnlinuxforwork.com/license/" target="_blank" rel="noopener noreferrer">GNU AGPL v3.0 or later</a>.
+    Scripts run at your own risk — see the <a href="https://learnlinuxforwork.com/terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>.</div>
+    <div class="footer__links">
+      <a href="../index.html#cloud-labs">Course home</a>
+      <a href="https://www.learnlinuxforwork.com" target="_blank" rel="noopener noreferrer">Linux training</a>
+      <a href="https://linuxcert.guru/" target="_blank" rel="noopener noreferrer">RHCSA mocks</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/lab.js"></script>
+</body>
+</html>

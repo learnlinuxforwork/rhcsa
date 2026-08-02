@@ -214,10 +214,12 @@ li { margin-bottom: 5px; }
 .btn:hover { background: var(--bg-hover); border-color: var(--border-strong); text-decoration: none; }
 .btn:active { transform: translateY(1px); }
 .btn--icon { padding: 7px; }
+.btn--sm { padding: 4px 10px; font-size: 11.5px; gap: 5px; }
 .btn--primary {
   background: var(--accent); border-color: var(--accent); color: var(--accent-contrast);
 }
 .btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.is-copied { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
 .btn svg { width: 16px; height: 16px; }
 
 .btn--menu { display: none; }
@@ -532,6 +534,22 @@ a.lab-card:hover .lab-card__name { color: var(--accent); }
 .lab-card__desc { font-size: 13.4px; color: var(--text-2); }
 .lab-card__meta { font-size: 11.5px; font-weight: 700; color: var(--accent); text-align: right; white-space: nowrap; }
 
+.script-link { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; justify-content: flex-end; }
+.script-link__btn {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-2);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+.script-link__btn svg { width: 14px; height: 14px; }
+.script-link__name {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--text-3);
+  white-space: nowrap; transition: color 0.15s var(--ease);
+}
+.script-link:hover { text-decoration: none; }
+.script-link:hover .script-link__btn { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+.script-link:hover .script-link__name { color: var(--accent); }
+
 /* ------------------------------------------------------- resources ----- */
 .res-group { margin-bottom: 22px; }
 .res-group h3 {
@@ -597,6 +615,7 @@ a.lab-card:hover .lab-card__name { color: var(--accent); }
   .section h2 { font-size: 21px; }
   .lab-card { grid-template-columns: minmax(0, 1fr); gap: 5px; }
   .lab-card__meta { text-align: left; }
+  .script-link { justify-content: flex-start; }
   .brand__sub { display: none; }
 }
 

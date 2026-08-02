@@ -45,6 +45,7 @@
       '" target="_blank" rel="noopener noreferrer">' + esc(label) + "</a>";
   }
   var ICON_EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+  var ICON_SCRIPT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>';
   var ICON_CHEV = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 
   function ring(pct, size) {
@@ -87,10 +88,15 @@
       esc(g.step) + "</span><h3>" + esc(g.title) + "</h3></div>" +
       (g.intro ? '<p class="lab-group__intro">' + g.intro + "</p>" : "") +
       '<div class="card">' + g.items.map(function (it) {
+        var meta = it.scriptUrl
+          ? '<a class="script-link" href="' + esc(it.scriptUrl) + '" target="_blank" rel="noopener noreferrer" title="Open the ' + esc(it.name) + ' script">' +
+            '<span class="script-link__btn">' + ICON_SCRIPT + '</span>' +
+            '<span class="script-link__name">' + esc(it.meta || "") + '</span></a>'
+          : esc(it.meta || "");
         return '<div class="lab-card"><div><div class="lab-card__name">' + link(it.url, it.name, "") + "</div>" +
           (it.sub ? '<div class="lab-card__sub">' + esc(it.sub) + "</div>" : "") + "</div>" +
           '<div class="lab-card__desc">' + it.desc + "</div>" +
-          '<div class="lab-card__meta">' + esc(it.meta || "") + "</div></div>";
+          '<div class="lab-card__meta">' + meta + "</div></div>";
       }).join("") + "</div>" +
       (g.after ? '<div style="margin-top:14px"><h4 style="font-size:13.5px;margin-bottom:6px">' +
         esc(g.after.title) + '</h4><ul class="prose">' +
