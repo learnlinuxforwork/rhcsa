@@ -214,7 +214,30 @@
         '</p><p><a class="btn btn--primary" href="' + esc(lb.download.url) + '" target="_blank" rel="noopener noreferrer">' +
         esc(lb.download.label) + "</a></p></div>" : "") + "</section>");
 
-    /* 08 resources */
+    /* 09 employer verification */
+    var vf = d.verify;
+    if (vf) {
+      h.push('<section class="section" id="' + vf.id + '">' + head(vf) + prose(vf.body) +
+        callout(vf.startHere) +
+        vf.groups.map(function (g) {
+          return '<div class="lab-group"><div class="lab-group__head"><span class="lab-group__step">' +
+            esc(g.step) + "</span><h3>" + esc(g.title) + "</h3></div>" +
+            (g.intro ? '<p class="lab-group__intro">' + g.intro + "</p>" : "") +
+            '<div class="card">' + g.items.map(function (it) {
+              return '<div class="lab-card"><div><div class="lab-card__name">' + link(it.url, it.name, "") + "</div>" +
+                (it.sub ? '<div class="lab-card__sub">' + esc(it.sub) + "</div>" : "") + "</div>" +
+                '<div class="lab-card__desc">' + it.desc + "</div>" +
+                '<div class="lab-card__meta">' + esc(it.meta || "") + "</div></div>";
+            }).join("") + "</div></div>";
+        }).join("") +
+        (vf.note ? '<div class="callout callout--success"><div class="callout__title">' +
+          esc(vf.note.title) + "</div><p>" + esc(vf.note.text) +
+          '</p><p><a class="btn btn--primary" href="' + esc(vf.note.url) + '" target="_blank" rel="noopener noreferrer">' +
+          esc(vf.note.label) + "</a></p></div>" : "") +
+        "</section>");
+    }
+
+    /* 10 resources */
     var rs = d.resources;
     h.push('<section class="section" id="' + rs.id + '">' + head(rs) +
       rs.groups.map(function (g) {
@@ -226,12 +249,12 @@
           }).join("") + "</div></div>";
       }).join("") + "</section>");
 
-    /* 09 costs */
+    /* 11 costs */
     var co = d.costs;
     h.push('<section class="section" id="' + co.id + '">' + head(co) +
       table(co.columns, co.rows) + callout(co.note) + "</section>");
 
-    /* 10 exam day */
+    /* 12 exam day */
     var ed = d.examday;
     h.push('<section class="section" id="' + ed.id + '">' + head(ed) +
       '<div class="card card--pad">' + ed.tips.map(function (t) {
@@ -242,7 +265,7 @@
       '<ul class="prose">' + ed.checklist.bullets.map(function (b) { return "<li>" + b + "</li>"; }).join("") + "</ul>" +
       callout(ed.note) + "</section>");
 
-    /* 11 why I built this */
+    /* 13 why I built this */
     var sy = d.story;
     if (sy) {
       h.push('<section class="section" id="' + sy.id + '">' + head(sy) +
@@ -265,7 +288,7 @@
         "</div></section>");
     }
 
-    /* 13 credits */
+    /* 14 credits */
     var cr = d.credits;
     if (cr) {
       h.push('<section class="section" id="' + cr.id + '">' + head(cr) + prose(cr.body) +
@@ -321,6 +344,7 @@
       })},
       { label: "Reference", links: [
         { href: "#" + d.labs.id, text: d.labs.title },
+        { href: "#" + d.verify.id, text: d.verify.title },
         { href: "#" + d.resources.id, text: d.resources.title },
         { href: "#" + d.costs.id, text: d.costs.title },
         { href: "#" + d.examday.id, text: d.examday.title },
