@@ -1138,46 +1138,48 @@
     "num": "09",
     "eyebrow": "09 · Employer verification",
     "title": "Employer Verification",
-    "subtitle": "This course is free. A verifiable certificate of completion, if you want one, is $20",
+    "subtitle": "This course is free. A verifiable certificate of completion, if you want one, runs through a $20/month subscription you can cancel anytime",
     "body": [
       "Everything on this page — all 12 weeks, every lab guide, the eBook — is free and always will be. It has no login and tracks nothing.",
-      "Some employers and government leads want more than your word that you did the work. Learn Linux For Work's paid course track wraps this same curriculum in a tracked account, so finishing it produces a certificate an employer can actually check — not just a PDF you made yourself."
+      "Some employers and government leads want more than your word that you did the work. Learn Linux For Work's paid course track wraps this same curriculum in a tracked account, so finishing it produces a certificate an employer can actually check — not just a PDF you made yourself. It's a $20/month subscription, not a one-time purchase: stay enrolled while you work through the weeks, then cancel as soon as you've got your certificate. You keep it either way."
     ],
     "startHere": {
       "kind": "info",
       "title": "How it works",
       "steps": [
-        "Join Learn Linux For Work and enroll in the RHCSA course track — $20, one-time, no subscription.",
+        "Join Learn Linux For Work and enroll in the RHCSA course track — $20/month, cancel anytime.",
         "Work through the same 12 weeks and 99 tasks on this page, tracked to your account instead of just your browser.",
-        "Finish the course and request your certificate — a shareable digital credential for LinkedIn, or a copy printed and mailed to your door."
+        "Finish the course and request your certificate — a shareable digital credential for LinkedIn, or a copy printed and mailed to your door. Cancel the subscription once you have it; the certificate is yours to keep."
       ]
     },
     "groups": [
       {
         "step": "Choose one",
         "title": "Two ways to prove it",
-        "intro": "",
+        "intro": "Same certificate, delivered two ways — click either card to enroll and pick one once you finish.",
         "items": [
           {
             "name": "Digital certificate",
             "sub": "Included with enrollment",
             "desc": "A certificate with a unique ID an employer can verify, plus a LinkedIn-ready credential you can add straight to your profile under Licenses &amp; Certifications. Download the PDF and print it yourself if you want a paper copy.",
-            "meta": "Instant"
+            "meta": "Instant",
+            "url": "https://learnlinuxforwork.com/courses/rhcsa"
           },
           {
             "name": "Printed & mailed certificate",
             "sub": "Physical copy",
             "desc": "The same certificate, professionally printed and mailed to your home address — for the wall, the interview folder, or a government contract file that wants a hard copy on record.",
-            "meta": "+ shipping"
+            "meta": "+ shipping",
+            "url": "https://learnlinuxforwork.com/courses/rhcsa"
           }
         ]
       }
     ],
     "note": {
       "title": "Join Learn Linux For Work",
-      "text": "Enroll in the RHCSA course for $20 and turn your progress on this page into a certificate you can put in front of an employer.",
+      "text": "Enroll in the RHCSA course for $20/month and turn your progress on this page into a certificate you can put in front of an employer. Cancel anytime — including right after you get your certificate.",
       "url": "https://learnlinuxforwork.com/courses/rhcsa",
-      "label": "Enroll — $20"
+      "label": "Enroll — $20/mo"
     }
   },
   "resources": {

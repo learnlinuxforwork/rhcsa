@@ -224,10 +224,12 @@
             esc(g.step) + "</span><h3>" + esc(g.title) + "</h3></div>" +
             (g.intro ? '<p class="lab-group__intro">' + g.intro + "</p>" : "") +
             '<div class="card">' + g.items.map(function (it) {
-              return '<div class="lab-card"><div><div class="lab-card__name">' + link(it.url, it.name, "") + "</div>" +
+              var tag = it.url ? "a" : "div";
+              var attrs = it.url ? ' href="' + esc(it.url) + '" target="_blank" rel="noopener noreferrer"' : "";
+              return "<" + tag + ' class="lab-card"' + attrs + "><div><div class=\"lab-card__name\">" + esc(it.name) + "</div>" +
                 (it.sub ? '<div class="lab-card__sub">' + esc(it.sub) + "</div>" : "") + "</div>" +
                 '<div class="lab-card__desc">' + it.desc + "</div>" +
-                '<div class="lab-card__meta">' + esc(it.meta || "") + "</div></div>";
+                '<div class="lab-card__meta">' + esc(it.meta || "") + "</div></div></" + tag + ">";
             }).join("") + "</div></div>";
         }).join("") +
         (vf.note ? '<div class="callout callout--success"><div class="callout__title">' +
