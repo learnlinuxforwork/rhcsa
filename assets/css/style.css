@@ -404,8 +404,8 @@ tbody td:first-child { color: var(--text); font-weight: 600; }
 .phase__badge b { font-size: 17px; font-weight: 800; }
 .phase__badge span { display: block; font-size: 8.5px; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.85; }
 .phase__meta { min-width: 0; flex: 1; }
-.phase__title { font-size: 16px; font-weight: 700; }
-.phase__sub { font-size: 12.5px; color: var(--text-3); margin-top: 1px; }
+.phase__title { display: block; font-size: 16px; font-weight: 700; }
+.phase__sub { display: block; font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
 .phase__right { display: flex; align-items: center; gap: 12px; flex: none; }
 .phase__count { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .phase__ring { flex: none; }
